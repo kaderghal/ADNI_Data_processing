@@ -12,16 +12,15 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 
 1. Linux (Ubuntu Distribution : 18.04 LTS)
 2. Python 3.4
-* python packages:
-.. * nibabel, lmdb, scipy ...
+3. python packages:
+..* nibabel
+..* lmdb
+..* scipy
+
 
 3. Deep learning Framework
-.. * Caffe or Tensorflow
-
-
-
-
-
+..* Caffe or
+..* Tensorflow
 
 - List of Acronyms:
 
@@ -37,9 +36,10 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 
 
 ## Author
-### ADERGHAL KARIM 2018
-### LaBRI - University of Bordeaux - Bordeaux/France
-### LabSIV - University Ibn Zohr - Agadir/Morocco
-### email: {aderghal}.{karim}@gmail.com
-### email: {karim}.{aderghal}@labri.fr
-[link text itself]: http://www.labri.fr/perso/kadergha
+ADERGHAL KARIM 2018
+LaBRI - University of Bordeaux - Bordeaux/France
+LabSIV - University Ibn Zohr - Agadir/Morocco
+email: {aderghal}.{karim}@gmail.com
+email: {karim}.{aderghal}@labri.fr
+[link text itself]: 
+[http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
