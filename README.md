@@ -11,12 +11,12 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 
 - List of Acronyms:
 
-| Abvs.  | meaning  |
-|---|---|
-| AD   | Alzheimer's Disease |
-| MCI  | Mild Co,gnitive Impairment |
-| NC   | Normal Control|
-| MMSE | ... |
+| Abvs.| meaning                     |
+|------|-----------------------------|
+| AD   | Alzheimer's Disease         |
+| MCI  | Mild Co,gnitive Impairment  |
+| NC   | Normal Control              |
+| MMSE | ...                         |
 | sMRI | Structural Magnitic Imaging |
-| DTI  | Diffusion Tensor Imaging|
-| HIPP | Hippocampus|
+| DTI  | Diffusion Tensor Imaging    |
+| HIPP | Hippocampus                 |
