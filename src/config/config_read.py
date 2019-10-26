@@ -21,7 +21,7 @@ def get_author_info():
 
 def get_global_params():
     tempo_dict = {}
-    tempo_dict['caffe_root'] = str(cfg.GLOBAL_PARAMS['root_caffe'])
+    tempo_dict['pytorch_root'] = str(cfg.GLOBAL_PARAMS['pytorch_root'])
     tempo_dict['adni_data_src'] = str(cfg.GLOBAL_PARAMS['adni_data_src'])
     tempo_dict['adni_data_des'] = str(cfg.GLOBAL_PARAMS['adni_data_des'])
     return tempo_dict
@@ -29,20 +29,14 @@ def get_global_params():
 
 def get_adni_datasets():
     tempo_dict = {}
-    tempo_dict['adni_1_brain_data'] = str(cfg.ADNI_DATASETS['adni_1_brain_data'])
-    tempo_dict['adni_2_brain_data'] = str(cfg.ADNI_DATASETS['adni_2_brain_data'])
-    tempo_dict['adni_3_brain_data'] = str(cfg.ADNI_DATASETS['adni_3_brain_data'])
-    tempo_dict['adni_1_target_data'] = str(cfg.ADNI_DATASETS['adni_1_target_data'])
-    tempo_dict['adni_2_target_data'] = str(cfg.ADNI_DATASETS['adni_2_target_data'])
-    tempo_dict['adni_3_target_data'] = str(cfg.ADNI_DATASETS['adni_3_target_data'])
+    tempo_dict['adni_1_brain_data'] = str(cfg.ADNI_DATASET['adni_1_brain_data'])
+    tempo_dict['adni_1_target_data'] = str(cfg.ADNI_DATASET['adni_1_target_data'])
     return tempo_dict
 
 
 def get_classes_datasets():
     tempo_dict = {}
-    tempo_dict['adni_1_classes'] = str(cfg.ADNI_DATASETS['adni_1_target_data']) + '/' + str(cfg.ADNI_CLASSES['adni_1_classes'])
-    tempo_dict['adni_2_classes'] = str(cfg.ADNI_DATASETS['adni_2_target_data']) + '/' + str(cfg.ADNI_CLASSES['adni_2_classes'])
-    tempo_dict['adni_3_classes'] = str(cfg.ADNI_DATASETS['adni_3_target_data']) + '/' + str(cfg.ADNI_CLASSES['adni_3_classes'])
+    tempo_dict['adni_1_classes'] = str(cfg.ADNI_DATASET['adni_1_target_data']) + '/' + str(cfg.ADNI_CLASSES['adni_1_classes'])
     return tempo_dict
 
 
@@ -52,6 +46,14 @@ def get_roi_params_hippocampus():
     tempo_dict['hipp_left'] = cfg.ROI_PARAMS_HIPP['hipp_left']
     tempo_dict['hipp_right'] = cfg.ROI_PARAMS_HIPP['hipp_right']
     tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_HIPP['padding_size'])
+    return tempo_dict
+
+def get_roi_params_posterior_cc():
+    tempo_dict = {}
+    tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_PPC['3D_or_2D']
+    tempo_dict['ppc_left'] = cfg.ROI_PARAMS_PPC['ppc_left']
+    tempo_dict['ppc_right'] = cfg.ROI_PARAMS_PPC['ppc_right']
+    tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_PPC['padding_size'])
     return tempo_dict
 
 
@@ -65,11 +67,12 @@ def get_augmentation_params():
 
 def get_split_params():
     tempo_dict = {}
-    tempo_dict['mri_valid_selected'] = cfg.SPLIT_SET_PARAMS['mri_valid_selected']
-    tempo_dict['md_valid_selected'] = cfg.SPLIT_SET_PARAMS['md_valid_selected']
-    tempo_dict['test_selected'] = cfg.SPLIT_SET_PARAMS['test_selected']
+    tempo_dict['static_split'] = cfg.SPLIT_SET_PARAMS['static_split']
+    tempo_dict['select_valid'] = cfg.SPLIT_SET_PARAMS['select_valid']
+    tempo_dict['select_test'] = cfg.SPLIT_SET_PARAMS['select_test']
     return tempo_dict
-
+       
+    
 
 def get_label_binary_codes():
     tempo_dict = {}
@@ -94,6 +97,9 @@ def get_all_data_params():
 
     for item in get_roi_params_hippocampus():
         lst_all[item] = get_roi_params_hippocampus()[item]
+        
+    for item in get_roi_params_posterior_cc():
+        lst_all[item] = get_roi_params_posterior_cc()[item]
 
     for item in get_augmentation_params():
         lst_all[item] = get_augmentation_params()[item]

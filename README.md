@@ -36,7 +36,7 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 
 
 ## Author
-ADERGHAL KARIM 2018
+ADERGHAL KARIM 2019
 LaBRI - University of Bordeaux - Bordeaux/France
 LabSIV - University Ibn Zohr - Agadir/Morocco
 email: {aderghal}.{karim}@gmail.com

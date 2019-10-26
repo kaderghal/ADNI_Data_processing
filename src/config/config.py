@@ -1,23 +1,26 @@
 # ====================================================
 # Copyright Karim ADERGHAL 2019
-# MIT License
+# SMRI dataset
 # ====================================================
 
 """ Configuration values needed to parametrize the application """
 
+#!/usr/bin/env python
+
 
 DEBUG = False
-TIMEZONE = 'Morocco/Agadir'
+TIMEZONE = 'France/Bordeaux'
 
 
 AUTHOR_INFO = {
     'name': 'Alz_ADNI_process',
     'version': '1.3',
-    'year': '2018',
+    'year': '2019',
     'description': 'Extracting data for CNN Alzheimer\'s Disease Classification',
-    'url': 'http://github.com/sabako123/---,
+    'url': 'http://github.com/kaderghal',
     'author': 'Karim ADERGHAL',
     'email': 'aderghal.karim@gmail.com',
+    'university': 'Bordeaux',
     'lab': 'LaBRI'
 }
 
@@ -26,36 +29,27 @@ AUTHOR_INFO = {
 # Root path to local workspace (local Machine)
 """
 ROOT_PATH_LOCAL_MACHINE = {
-    'root_machine': '/home/kadergha/ADERGHAL/Datasets/02_ADNI_Datasets/ADNI'
+    'root_machine': '/home/karim/workspace/ADNI_workspace'
 
 }
 
 """
-# Global parameters for CAFFE FrameWorke Installation folder
+# Global parameters for pytorch FrameWorke Installation folder
 # Data Folder src and des
 """
 GLOBAL_PARAMS = {
-    'root_caffe': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/path/to/caffe/',
+    'pytorch_root': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/path/to/pythorch/',
     'adni_data_src': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI_src/',
     'adni_data_des': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI_des/'
 }
 
-ADNI_DATASETS = {
+ADNI_DATASET = {
     'adni_1_brain_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI1/brain-data',
     'adni_1_target_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI1/target-data',
-
-    'adni_2_brain_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI2/brain-data',
-    'adni_2_target_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI2/target-data',
-
-    'adni_3_brain_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI3/brain-data',
-    'adni_3_target_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI3/target-data'
-
 }
 
 ADNI_CLASSES = {
-    'adni_1_classes': 'ADNI_1_classes.txt',
-    'adni_2_classes': 'ADNI_2_classes.txt',
-    'adni_3_classes': 'ADNI_3_classes.txt'
+    'adni_1_classes': 'ADNI_1_classes.txt'
 }
 
 
@@ -67,16 +61,16 @@ ADNI_CLASSES = {
 # For example if padding_size = 3 then the cubes size will be : 34 = 28 + (3*2)
 """
 ROI_PARAMS_HIPP = {
-    '3D_or_2D': '2D', # extract 
+    '3D_or_2D': '3D', # extract 
     'hipp_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
     'hipp_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
     'padding_size': 0,  # =>  28 + (x*2)
 }
 
 ROI_PARAMS_PPC = {
-    '3D_or_2D': '2D', # extract 
-    'hipp_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
-    'hipp_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
+    '3D_or_2D': '3D', # extract 
+    'ppc_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
+    'ppc_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
     'padding_size': 0,  # =>  28 + (x*2)
 }
 
@@ -96,9 +90,10 @@ AUGMENTATION_PARAMS = {
 # paameters for splitting the dataset for train, validation and test sets
 """
 SPLIT_SET_PARAMS = {
-    'mri_valid_selected': {'AD': 37, 'MCI': 79, 'NC': 45},  # %20
-    'md_valid_selected': {'AD': 10, 'MCI': 10, 'NC': 10},  # (AD, MCI, NC) selected number for each class
-    'test_selected': {'AD': 20, 'MCI': 20, 'NC': 20}
+    'static_split': False, # if false we comptue numbers with the %
+    'select_valid': {'AD': 30, 'MCI': 72, 'NC': 38},  # %20
+    'select_test': {'AD': 40, 'MCI': 40, 'NC': 40} # almost %20
+
 }
 
 
