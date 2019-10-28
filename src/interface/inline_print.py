@@ -49,6 +49,14 @@ def print_split_params():
     print("\n")
 
 
+def print_roi_params_global():
+    print("Roi Global parameters :")
+    for key in rsd.get_roi_params_global():
+        print('\t[' + key + ']: ' + str(rsd.get_roi_params_global()[key]))
+    print("\n")
+    
+    
+    
 def print_roi_params_hippocampus():
     print("Roi Hippocampus parameters :")
     for key in rsd.get_roi_params_hippocampus():
@@ -93,7 +101,7 @@ def print_dimensions_cubes_HIPP(l, r):
     print('\tHippocampus R : ({}, {}, {})'.format(r[1] - r[0], r[3] - r[2], r[5] - r[4]))
     print("\n")
         
-def print_dimensions_cubes_PCC(l, r):
+def print_dimensions_cubes_PPC(l, r):
     print("Posterior CC Cube (ROI) dimenssion after the extracting process :")
     print('\tPosterior_CC L : ({}, {}, {})'.format(l[1] - l[0], l[3] - l[2], l[5] - l[4]))
     print('\tPosterior_CC R : ({}, {}, {})'.format(r[1] - r[0], r[3] - r[2], r[5] - r[4]))

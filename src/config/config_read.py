@@ -40,20 +40,26 @@ def get_classes_datasets():
     return tempo_dict
 
 
+
+def get_roi_params_global():
+    tempo_dict = {}
+    tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_GLOBAL['3D_or_2D']
+    tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_GLOBAL['padding_size'])
+    return tempo_dict
+
+
+
+
 def get_roi_params_hippocampus():
     tempo_dict = {}
-    tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_HIPP['3D_or_2D']
     tempo_dict['hipp_left'] = cfg.ROI_PARAMS_HIPP['hipp_left']
     tempo_dict['hipp_right'] = cfg.ROI_PARAMS_HIPP['hipp_right']
-    tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_HIPP['padding_size'])
     return tempo_dict
 
 def get_roi_params_posterior_cc():
     tempo_dict = {}
-    tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_PPC['3D_or_2D']
     tempo_dict['ppc_left'] = cfg.ROI_PARAMS_PPC['ppc_left']
     tempo_dict['ppc_right'] = cfg.ROI_PARAMS_PPC['ppc_right']
-    tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_PPC['padding_size'])
     return tempo_dict
 
 
@@ -95,6 +101,9 @@ def get_all_data_params():
     for item in get_classes_datasets():
         lst_all[item] = get_classes_datasets()[item]
 
+    for item in get_roi_params_global():
+        lst_all[item] = get_roi_params_global()[item] 
+        
     for item in get_roi_params_hippocampus():
         lst_all[item] = get_roi_params_hippocampus()[item]
         

@@ -13,7 +13,7 @@ def get_nii_from_folder(folder):
     res = []
     for root, dirs, files in os.walk(folder):
         for file in files:
-            if file.endswith('stretched.nii') or file.endswith('MD.nii'):
+            if file.endswith('stretched.nii'): # or file.endswith('MD.nii'):
                 res.append(os.path.join(root, file))
     if len(res) > 1:
         print('WARNING. Folder %s contains more than one files' % folder)

@@ -1,9 +1,10 @@
-import config.config_read as rsd
-import interface.inline_print as in_print
 
-print("Test File")
 
-print(in_print.print_roi_params_posterior_cc())
+def karim_ade():
+    print("karim")
+    
+    
+a = "karim_ade"
 
-# print(in_print.print_global_params())
+eval(a)()
 

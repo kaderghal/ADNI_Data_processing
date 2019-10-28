@@ -196,47 +196,44 @@ def generate_augmentation_parameters_list_v2(max_blur, max_shift):
 
 
 
-"""
+##############################################################################################################
 # generate parameters (0, 0, 0, 0.0) for each subject
-"""
-
-# def generate_augm_lists(dirs_with_labels, new_size, max_blur, max_shift, default_augm_params=None):
-#     import numpy.random as rnd
-#     import math
+##############################################################################################################
+def generate_augm_lists(dirs_with_labels, new_size, max_blur, max_shift, default_augm_params=None):
+   
+    import numpy.random as rnd
+    import math
   
-
-#     # pas d'augmentation
-#     if new_size is None or len(dirs_with_labels) == new_size:  # ?
-#         return [dwl + [default_augm_params] for dwl in dirs_with_labels]
-
-#     local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
-#     print(len(local_param_list))
-#     shuffle(local_param_list)
-
-#     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))
+    # pas d'augmentation
+    if new_size is None or len(dirs_with_labels) == new_size:  # ?
+        return [dwl + [default_augm_params] for dwl in dirs_with_labels]
     
-    
-#     res = []
-#     i = 0
-#     for dwl in dirs_with_labels:
-#         res.append(dwl + [(0, 0, 0, 0.0)])
-#         i += 1
-#         for _ in range(augm_coeff - 1):
-#             print("i : ", i)
-#             # res.append(dwl + local_param_list[i])
-#             i += 1
+    # for avoid similar augmentation  
+    local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
+    print(len(local_param_list))
+    shuffle(local_param_list)
+    augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))    
+    res = []
+    i = 0
+    for dwl in dirs_with_labels:
+        res.append(dwl + [(0, 0, 0, 0.0)])
+        i += 1
+        # for _ in range(augm_coeff - 1):
+            # print("i : ", i)
+            # res.append(dwl + local_param_list[i])
+            # i += 1
 
-#     print("-->", dirs_with_labels[0][0], augm_coeff, len(dirs_with_labels), len(res), i)        
-#     while i < new_size:
-#         ridx = rnd.randint(len(dirs_with_labels))
-#         dwl = dirs_with_labels[ridx]
-#         res.append(dwl + local_param_list[i])
-#         i += 1
+    print("-->", dirs_with_labels[0][0], augm_coeff, len(dirs_with_labels), len(res), i)        
+    while i < new_size:
+        ridx = rnd.randint(len(dirs_with_labels))
+        dwl = dirs_with_labels[ridx]
+        res.append(dwl + local_param_list[i])
+        i += 1
 
 
-#     for x in res:
-#         print(x[0], x[3])
-#     return res
+    for x in res:
+        print(x[0], x[3])
+    return res
 
 
 
@@ -250,11 +247,10 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
     if new_size is None or len(dirs_with_labels) == new_size:  # ?
         return [dwl + [default_augm_params] for dwl in dirs_with_labels]
 
-
-    print("--------------")
-    print(dirs_with_labels[0][0], len(dirs_with_labels))
+    # print("--------------")
+    # print(dirs_with_labels[0][0], len(dirs_with_labels))
     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))
-    print("coff: ", augm_coeff)
+    # print("coff: ", augm_coeff)
 
     res = []
     i, j = 0, 0
@@ -283,8 +279,7 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
         res.append(dwl + local_param_list.pop())
         i += 1
         j += 1
-     
-    
+         
     return res
 
 
@@ -310,10 +305,10 @@ def get_dimensions_cubes_HIPP(data):
     return new_crp_l, new_crp_r
 
 
-def get_dimensions_cubes_PCC(data):
+def get_dimensions_cubes_PPC(data):
     full_brain_dimension = [121, 145, 121]  # original dimensions
-    crp_l = data['hipp_left']
-    crp_r = data['hipp_right']
+    crp_l = data['ppc_left']
+    crp_r = data['ppc_right']
     padding_size = int(data['padding_size'])
     shift_param = int(data['shift'])
     new_crp_l = (

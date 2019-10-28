@@ -6,9 +6,9 @@ import numpy as np
 
 def mean_hipp(mat_a, mat_b):
     x, y, z = mat_a.shape
-    for i in xrange(x):
-        for j in xrange(y):
-            for k in xrange(z):
+    for i in range(x):
+        for j in range(y):
+            for k in range(z):
                 mean_hipp[i, j, k] = (mat_a[i, j, k] + mat_b[i, j, k]) / 2
     return mean_hipp
 
@@ -16,9 +16,9 @@ def mean_hipp(mat_a, mat_b):
 def flip_3d(data):
     x, y, z = data.shape
     hipp_local = np.empty((x, y, z), np.float)
-    for i in xrange(x):
-        for j in xrange(y):
-            for k in xrange(z):
+    for i in range(x):
+        for j in range(y):
+            for k in range(z):
                 i_f = ((x - 1) - i)
                 hipp_local[i_f, j, k] = data[i, j, k]
     return hipp_local
@@ -27,9 +27,9 @@ def flip_3d(data):
 def mean_3d_matrix(mat_a, mat_b):
     x, y, z = mat_a.shape
     mean_hipp_local = np.empty((x, y, z), np.float)
-    for i in xrange(x):
-        for j in xrange(y):
-            for k in xrange(z):
+    for i in range(x):
+        for j in range(y):
+            for k in range(z):
                 mean_hipp_local[i, j, k] = (mat_a[i, j, k] + mat_b[i, j, k]) / 2
     return mean_hipp_local
 
@@ -87,3 +87,49 @@ def process_mean_hippocampus(list_item, data_params):
     roi_cube_right_flipped = flip_3d(roi_cube_right)
     roi_hippocampus_mean = mean_3d_matrix(roi_cube_left, roi_cube_right_flipped)
     return roi_hippocampus_mean
+
+
+
+
+def process_cube_HIPP(list_item, data_params):
+    nii = ""
+    nii = daf.get_nii_from_folder(list_item[1])[0]  # get first found files (nii) from dir
+    array = tls.nii_to_array(nii, np.float)
+    padding_param = int(data_params['padding_size'])
+    max_shift_param = int(data_params['shift'])
+
+    # Augmentations cubes
+    sub_l, sub_r = augmentation_cubes(array, max_shift_param, list_item[2])
+    roi_hipp_l_params = data_params['hipp_left']  # Hippocampus ROI corrdinates(x,x,y,y,z,z)
+    roi_hipp_r_params = data_params['hipp_right']
+    new_crp_l = (roi_hipp_l_params[0] - 1 - max_shift_param - padding_param, roi_hipp_l_params[1] - 1 - max_shift_param + padding_param,
+                 roi_hipp_l_params[2] - 1 - max_shift_param - padding_param, roi_hipp_l_params[3] - 1 - max_shift_param + padding_param,
+                 roi_hipp_l_params[4] - 1 - max_shift_param - padding_param, roi_hipp_l_params[5] - 1 - max_shift_param + padding_param)
+    new_crp_r = (roi_hipp_r_params[0] - 1 - max_shift_param - padding_param, roi_hipp_r_params[1] - 1 - max_shift_param + padding_param,
+                 roi_hipp_r_params[2] - 1 - max_shift_param - padding_param, roi_hipp_r_params[3] - 1 - max_shift_param + padding_param,
+                 roi_hipp_r_params[4] - 1 - max_shift_param - padding_param, roi_hipp_r_params[5] - 1 - max_shift_param + padding_param)
+
+    return crop_cubes(sub_l, sub_r, new_crp_l, new_crp_r)
+
+
+
+
+def process_cube_PPC(list_item, data_params):
+    nii = ""
+    nii = daf.get_nii_from_folder(list_item[1])[0]  # get first found files (nii) from dir
+    array = tls.nii_to_array(nii, np.float)
+    padding_param = int(data_params['padding_size'])
+    max_shift_param = int(data_params['shift'])
+
+    # Augmentations cubes
+    sub_l, sub_r = augmentation_cubes(array, max_shift_param, list_item[2])
+    roi_ppc_l_params = data_params['ppc_left']  # PCC ROI corrdinates(x,x,y,y,z,z)
+    roi_pcc_r_params = data_params['ppc_right']
+    new_crp_l = (roi_ppc_l_params[0] - 1 - max_shift_param - padding_param, roi_ppc_l_params[1] - 1 - max_shift_param + padding_param,
+                 roi_ppc_l_params[2] - 1 - max_shift_param - padding_param, roi_ppc_l_params[3] - 1 - max_shift_param + padding_param,
+                 roi_ppc_l_params[4] - 1 - max_shift_param - padding_param, roi_ppc_l_params[5] - 1 - max_shift_param + padding_param)
+    new_crp_r = (roi_pcc_r_params[0] - 1 - max_shift_param - padding_param, roi_pcc_r_params[1] - 1 - max_shift_param + padding_param,
+                 roi_pcc_r_params[2] - 1 - max_shift_param - padding_param, roi_pcc_r_params[3] - 1 - max_shift_param + padding_param,
+                 roi_pcc_r_params[4] - 1 - max_shift_param - padding_param, roi_pcc_r_params[5] - 1 - max_shift_param + padding_param)
+
+    return crop_cubes(sub_l, sub_r, new_crp_l, new_crp_r)

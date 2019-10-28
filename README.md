@@ -11,11 +11,13 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 # Requirements
 
 1. Linux (Ubuntu Distribution : 18.04 LTS)
-2. Python 3.4
+2. Python 3.6 (updated to python 3)
 3. python packages:
 ..* nibabel
 ..* lmdb
 ..* scipy
+..* pillow
+
 
 
 3. Deep learning Framework

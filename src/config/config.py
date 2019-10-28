@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # ====================================================
 # Copyright Karim ADERGHAL 2019
 # SMRI dataset
@@ -5,7 +6,6 @@
 
 """ Configuration values needed to parametrize the application """
 
-#!/usr/bin/env python
 
 
 DEBUG = False
@@ -60,18 +60,19 @@ ADNI_CLASSES = {
 # you can change it by adding padding parameter as follow 28 + (x*2) with x the pad.
 # For example if padding_size = 3 then the cubes size will be : 34 = 28 + (3*2)
 """
+ROI_PARAMS_GLOBAL = {
+    '3D_or_2D': '3D', # extract data   
+    'padding_size': 0,  # =>  28 + (x*2)  
+}
+
 ROI_PARAMS_HIPP = {
-    '3D_or_2D': '3D', # extract 
     'hipp_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
     'hipp_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
-    'padding_size': 0,  # =>  28 + (x*2)
 }
 
 ROI_PARAMS_PPC = {
-    '3D_or_2D': '3D', # extract 
     'ppc_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
     'ppc_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
-    'padding_size': 0,  # =>  28 + (x*2)
 }
 
 """
@@ -82,7 +83,7 @@ ROI_PARAMS_PPC = {
 AUGMENTATION_PARAMS = {
     'shift': 2,  # Max Shift
     'sigma': 1.2,  # Max Sigma for Gaussian Blur
-    'factor': 100  # Augmentation Factor 
+    'factor': 1  # Augmentation Factor 
 }
 
 """
@@ -109,3 +110,13 @@ LABELS_CODES = {
     'AD-MCI-NC': {'AD': 0, 'MCI': 1, 'NC': 2}  
 }
 
+# for text colot
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
