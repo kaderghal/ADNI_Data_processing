@@ -1,0 +1,15 @@
+numpy.stack
+
+https://www.kaggle.com/pinocookie/pytorch-dataset-and-dataloader
+
+https://qiita.com/JUN_NETWORKS/items/65cc313e810cc6b31098
+
+https://discuss.pytorch.org/t/save-dataset-into-pt-file/25293/5
+
+https://pytorch.org/docs/stable/data.html
+
+https://gist.github.com/kevinzakka/d33bf8d6c7f06a9d8c76d97a7879f5cb
+
+https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad
+
+https://www.kaggle.com/leighplt/pytorch-tutorial-dataset-data-preparetion-stage
