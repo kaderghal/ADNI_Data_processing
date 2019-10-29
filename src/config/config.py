@@ -81,8 +81,8 @@ ROI_PARAMS_PPC = {
 # and max siga parameter for gaussian blur
 """
 AUGMENTATION_PARAMS = {
-    'shift': 2,  # Max Shift
-    'sigma': 1.2,  # Max Sigma for Gaussian Blur
+    'shift': 1,  # Max Shift
+    'sigma': 0,  # Max Sigma for Gaussian Blur
     'factor': 1  # Augmentation Factor 
 }
 
@@ -110,7 +110,7 @@ LABELS_CODES = {
     'AD-MCI-NC': {'AD': 0, 'MCI': 1, 'NC': 2}  
 }
 
-# for text colot
+# for text color
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'

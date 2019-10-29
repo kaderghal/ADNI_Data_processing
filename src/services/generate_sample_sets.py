@@ -12,6 +12,7 @@ import interface.inline_print as iprint
 import config.config_read as rsd
 import config.config as cfg
 import services.process as prc
+import plot.plot_data as plot_data
 import time
 import math
 
@@ -121,6 +122,9 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
     print('* [valid] data will be augmented to  {} samples by each class'.format(adni_1_valid_size_balanced))
     print('* [test]  data will be not augmented {} samples by each class'.format(adni_1_test_size))
     print('---------------------------------------------------------------------\n')
+    
+    
+    iprint.print_augmentation_table([adni_1_train_size_balanced, adni_1_valid_size_balanced, adni_1_test_size])
     
   
     adni_1_train_lists_out = []
@@ -248,7 +252,7 @@ def generate_2D_data(data_params, lst, lmdb_name, label_code):
 #######################################################################################################
 def generate_3D_data(data_params, lst, lmdb_name, label_code):
     print("--->>  creating data for : \'{}\' - {}, size of list : {} <<--- \n".format(lmdb_name, label_code, len(lst)))
-    process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_ROI="PCC")
+    process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_ROI="HIPP")
     print("#================================ End Creating dataset =============================================#\n\n")
 
 
@@ -303,7 +307,7 @@ def process_extracting_2D_data(data_params, lst, lmdb_name, label_code, indice_R
 #######################################################################################################
 # 3D extracting for pytorch
 #######################################################################################################
-def process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_ROI="PCC"): 
+def process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_ROI="HIPP"): 
     
     if("HIPP" in indice_ROI):
         l, r = tls.get_dimensions_cubes_HIPP(data_params)
@@ -338,12 +342,19 @@ def process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_R
     
     key = 0
     for input_line in lst:
-        data_roi = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
+        data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
         data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        
+        print("type :", type(data_roi_left))       
         
         print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi.shape, lmdb_name, label_code[input_line[0]])
+
+
+        plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
+        plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
+        plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
+
+
 
     # destination_data_sag = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[0]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
     # label_text_file_sag = destination_data_sag + lmdb_set + '_lmdb.txt'

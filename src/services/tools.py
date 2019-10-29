@@ -243,27 +243,26 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
     import numpy.random as rnd
     import math
 
+    print(len(dirs_with_labels), new_size)
     # pas d'augmentation
-    if new_size is None or len(dirs_with_labels) == new_size:  # ?
+    if new_size is None or len(dirs_with_labels) == new_size or max_blur == 0 or max_shift == 0:  # ?
         return [dwl + [default_augm_params] for dwl in dirs_with_labels]
 
-    # print("--------------")
-    # print(dirs_with_labels[0][0], len(dirs_with_labels))
     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))
-    # print("coff: ", augm_coeff)
-
+    print(augm_coeff)
     res = []
     i, j = 0, 0
+    local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
+    shuffle(local_param_list)
+    print("len; ", local_param_list)
+        
     for dwl in dirs_with_labels:
         res.append(dwl + [(0, 0, 0, 0.0)])
-        # print(i, j,  dwl[1], [(0, 0, 0, 0.0)])
-        local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
-        shuffle(local_param_list)
+
         i += 1
         j += 1
         for _ in range(augm_coeff - 1):
             res.append(dwl + local_param_list.pop())
-            # print(i, j, dwl[1], local_param_list.pop())
             i += 1
             j += 1
 
@@ -274,8 +273,7 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
 
     for x in range(new_size - len(dirs_with_labels) * augm_coeff):
         ridx = rnd.randint(len(dirs_with_labels))
-        dwl = dirs_with_labels[ridx]
-        # print(i, "y", j, dwl[1], local_param_list.pop()) 
+        dwl = dirs_with_labels[ridx] 
         res.append(dwl + local_param_list.pop())
         i += 1
         j += 1

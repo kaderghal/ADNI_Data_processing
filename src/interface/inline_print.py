@@ -116,6 +116,24 @@ def print_adni_desc(adni1):
     print("\t| ADNI 1 |     {}   |    {}     |    {}      ------".format(len(adni1[0]), len(adni1[1]), len(adni1[2])))
     print("\t------------------------------------------------------")
 
+
+
+def print_augmentation_table(data):
+    print("\t------------------------------------------------------")
+    print("\t|                Augmentation DESC                   |")
+    print("\t------------------------------------------------------")
+    print("\t----------     AD    |     MCI    |    NC       ------")
+    print("\t------------------------------------------------------")
+    print("\t| Train |     {}   |    {}     |    {}      ------".format(data[0], data[0], data[0]))
+    print("\t------------------------------------------------------")
+    print("\t| Valid |     {}   |    {}     |    {}      ------".format(data[1], data[1], data[1]))
+    print("\t------------------------------------------------------")
+    print("\t| Test  |     {}   |    {}     |    {}      ------".format(data[2], data[2], data[2]))
+    print("\t------------------------------------------------------")
+
+    
+    
+    
 def print_2D_or_3D_data():
     selected_decision = raw_input("Do you want create 3D Data roi or 2D slices ? \n - [0] 3D - [1] 2D \n ")
     return True if int(selected_decision) == 0 else False
