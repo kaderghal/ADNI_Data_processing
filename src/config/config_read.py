@@ -31,6 +31,7 @@ def get_adni_datasets():
     tempo_dict = {}
     tempo_dict['adni_1_brain_data'] = str(cfg.ADNI_DATASET['adni_1_brain_data'])
     tempo_dict['adni_1_target_data'] = str(cfg.ADNI_DATASET['adni_1_target_data'])
+    tempo_dict['adni_1_meta_data'] = str(cfg.ADNI_DATASET['adni_1_meta_data'])
     return tempo_dict
 
 

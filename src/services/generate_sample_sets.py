@@ -102,9 +102,6 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
     print('-------------------------------------------------------------------------------------------\n')
 
     train_selected_size = {k: adni1_size[k] - valid_selected_size[k] - test_selected_size[k] for k in stage_classes}    
-    # print([train_selected_size[item] for item in train_selected_size.keys()])
-    # print([valid_selected_size[item] for item in valid_selected_size.keys()])
-    # print([test_selected_size[item] for item in test_selected_size.keys()])
 
     adni_1_test  = {k: adni_1_dirs_root[k][:int(test_selected_size[k])] for k in stage_classes}
     adni_1_valid = {k: adni_1_dirs_root[k][int(test_selected_size[k]):int(test_selected_size[k]) + int(valid_selected_size[k])] for k in stage_classes}
@@ -342,26 +339,37 @@ def process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_R
     
     key = 0
     for input_line in lst:
+        
+        # Mean ROI (L & R)
         data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
-        data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        print("type :", type(data_roi_left))       
+        # Left and Right ROI 
+        # data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi.shape, lmdb_name, label_code[input_line[0]])
+        # Fliped Felt & Right ROI       
+        # data_roi_left_flip = prc.flip_3d(data_roi_left)
+        # data_roi_right_flip = prc.flip_3d(data_roi_right)
+        
+        # subject_ID = str(input_line[1]).split('/')[7]
+        
+        # # [Age, Id, Sex, MMSE]
+        # meta_data = tls.get_meta_data_xml(data_params, subject_ID)
+        # print(meta_data)
+
+        print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, lmdb_name, label_code[input_line[0]])
+
+        # plot Data
+        # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, slc_index_begin, slc_index_end)
+        # plot_data.plot_ROI_all(data_roi_right, data_roi_left_flip, slc_index_begin, slc_index_end)
+    
+        # plot_data.plot_ROI_all(data_roi_left, data_roi_right, slc_index_begin, slc_index_end)
+        # plot_data.plot_ROI_all(data_roi_left_flip, data_roi_right_flip, slc_index_begin, slc_index_end)
+        
+        # plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
+        # plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
+        # plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
 
 
-        plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
-        plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
-        plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
-
-
-
-    # destination_data_sag = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[0]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    # label_text_file_sag = destination_data_sag + lmdb_set + '_lmdb.txt'
-    # destination_data_cor = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[1]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    # label_text_file_cor = destination_data_cor + lmdb_set + '_lmdb.txt'
-    # destination_data_axi = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[2]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    # label_text_file_axi = destination_data_axi + lmdb_set + '_lmdb.txt'
 
         key += 1
         

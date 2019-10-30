@@ -46,6 +46,7 @@ GLOBAL_PARAMS = {
 ADNI_DATASET = {
     'adni_1_brain_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI1/brain-data',
     'adni_1_target_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI1/target-data',
+    'adni_1_meta_data': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/ADNI1/meta-data',
 }
 
 ADNI_CLASSES = {
@@ -62,7 +63,7 @@ ADNI_CLASSES = {
 """
 ROI_PARAMS_GLOBAL = {
     '3D_or_2D': '3D', # extract data   
-    'padding_size': 0,  # =>  28 + (x*2)  
+    'padding_size': 10,  # =>  28 + (x*2)  
 }
 
 ROI_PARAMS_HIPP = {
@@ -78,11 +79,11 @@ ROI_PARAMS_PPC = {
 """
 # Augmentation params
 # max shift for each projection (s,s,s) with y an integer in [-s,s]
-# and max siga parameter for gaussian blur
+# and max siga parameter for gaussian blur (we can use also Flip to augment data)
 """
 AUGMENTATION_PARAMS = {
-    'shift': 1,  # Max Shift
-    'sigma': 0,  # Max Sigma for Gaussian Blur
+    'shift': 2,  # Max Shift
+    'sigma': 1.0,  # Max Sigma for Gaussian Blur
     'factor': 1  # Augmentation Factor 
 }
 

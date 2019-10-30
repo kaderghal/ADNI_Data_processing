@@ -92,3 +92,12 @@ def read_data_file(path_file):
         content = f.readlines()
 
     return [item.strip() for item in content]
+
+
+
+
+
+
+
+
+

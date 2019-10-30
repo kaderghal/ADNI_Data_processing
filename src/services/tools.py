@@ -1,91 +1,37 @@
 import config.config_read as rsd
+import io_data.xml_acces_file as xaf
 import os
 import errno
 import numpy as np
 import numpy.random as rnd
+import xml.etree.ElementTree as ET
 from random import shuffle
 
 
+
+
 """
-# generate a conevntionned name from the config parameters
+# get Subject Info [Age, Sex, MMSE]
+"""
+def get_meta_data_xml(data_params, subject_ID):
+    return xaf.get_Subject_info(data_params, subject_ID)    
+    
+      
+
+
+    
+
+    
+"""
+# function generates a conevntionned name from the config parameters
 # example : if factor is 100, dim is 28, max shift is 2 and, gaussian blurr is 1.2
-# the name it will be => F_28P_F100_MS02_MB12D
+# the name will be like => F_28P_F100_MS02_MB12D
 """
 def get_convention_name(data_params):
     dim_pixel = get_dimensions_patch(data_params)[0]
     path_file = 'F_' + str(dim_pixel) + 'P_F' + str(data_params['factor']) + '_MS' + str(data_params['shift']) + '_MB' + str(data_params['sigma']).replace(".", "") + 'D'
     return path_file
 
-
-# get data for both MRI and DTI
-
-
-def get_selected_subjects_id(data, k_class_adni, test_size_mri, valid_size_mri, train_size_mri, test_size_md, valid_size_md, train_size_md):
-    file_test_text_01 = data['list_id'] + 'db_01/db_01_' + k_class_adni + '.txt'  # only sMRI dataset
-    file_test_text_02 = data['list_id'] + 'db_02/db_02_' + k_class_adni + '.txt'  # dataset with MD modality
-    list_id_01 = []
-    list_id_02 = []
-    with open(file_test_text_01, 'r') as fs_01:
-        for line in fs_01:
-            list_id_01.append(line.rstrip('\n'))
-
-    with open(file_test_text_02, 'r') as fs_02:
-        for line in fs_02:
-            list_id_02.append(line.rstrip('\n'))
-
-    # rnd.shuffle(list_id_01)
-    # rnd.shuffle(list_id_02)
-
-    mri_test = list_id_02[:test_size_mri]
-    md_test = list_id_02[:test_size_md]
-    current_02 = list_id_02[test_size_md:]
-    list_id_01.extend(current_02)
-    rnd.shuffle(list_id_01)
-
-    mri_valid = list_id_01[:valid_size_mri]
-    mri_train = list_id_01[valid_size_mri:]
-    md_valid = current_02[:valid_size_md]
-    md_train = current_02[valid_size_md:]
-
-    print(k_class_adni)
-    for item in mri_test:
-        print(item)
-
-    if len(mri_test) == test_size_mri and len(mri_valid) == valid_size_mri and len(mri_train) == train_size_mri and len(md_test) == test_size_md and len(md_valid) == valid_size_md and len(md_train) == train_size_md:
-        return mri_test, mri_valid, mri_train, md_test, md_valid, md_train
-    else:
-        print('Error : something is wrong ! ')
-        return None
-
-
-#
-def get_selected_dirs(data, class_adni, test_size, valid_size, train_size):
-    file_test_text_01 = data['list_id'] + 'db_01/db_01_' + class_adni + '.txt'
-    file_test_text_02 = data['list_id'] + 'db_02/db_02_' + class_adni + '.txt'
-    list_id_01 = []
-    list_id_02 = []
-    with open(file_test_text_01, 'r') as fs_01:
-        for line in fs_01:
-            list_id_01.append(line.rstrip('\n'))
-
-    with open(file_test_text_02, 'r') as fs_02:
-        for line in fs_02:
-            list_id_02.append(line.rstrip('\n'))
-
-    rnd.shuffle(list_id_01)
-    rnd.shuffle(list_id_02)
-    test = list_id_02[:test_size]
-    list_id_01.extend(list_id_02[test_size:])
-
-    rnd.shuffle(list_id_01)
-    valid = list_id_01[:valid_size]
-    train = list_id_01[valid_size:]
-
-    if len(test) == test_size and len(valid) == valid_size and len(train) == train_size:
-        return test, valid, train
-    else:
-        print('Error : something is wrong ! ')
-        return None
 
 
 def matrix_rotation(mtx):
@@ -104,7 +50,6 @@ def create_folder(directory):
 
 
 def nii_to_array(nii_filename, data_type, fix_nan=True):  # get 3d array from the nii image
-    import os
     import nibabel as nib
     import numpy as np
     img = nib.load(nii_filename)
@@ -249,12 +194,10 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
         return [dwl + [default_augm_params] for dwl in dirs_with_labels]
 
     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))
-    print(augm_coeff)
     res = []
     i, j = 0, 0
     local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
     shuffle(local_param_list)
-    print("len; ", local_param_list)
         
     for dwl in dirs_with_labels:
         res.append(dwl + [(0, 0, 0, 0.0)])
@@ -287,7 +230,6 @@ def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, defa
 
 
 def get_dimensions_cubes_HIPP(data):
-    full_brain_dimension = [121, 145, 121]  # original dimensions
     crp_l = data['hipp_left']
     crp_r = data['hipp_right']
     padding_size = int(data['padding_size'])
@@ -304,7 +246,6 @@ def get_dimensions_cubes_HIPP(data):
 
 
 def get_dimensions_cubes_PPC(data):
-    full_brain_dimension = [121, 145, 121]  # original dimensions
     crp_l = data['ppc_left']
     crp_r = data['ppc_right']
     padding_size = int(data['padding_size'])

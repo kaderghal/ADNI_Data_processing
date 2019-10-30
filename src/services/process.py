@@ -44,7 +44,7 @@ def augmentation_cubes(data, max_shift, augm_params):
     # augm_params should be a tuple of 4 elements: shift_x, shift_y, shift_z, blur_sigma
     if data.ndim != 3 or len(augm_params) != 4:
         raise NameError('invalid input')
-    import numpy as np
+
     from scipy.ndimage.filters import gaussian_filter
     shift_x = augm_params[0]
     shift_y = augm_params[1]
@@ -57,11 +57,6 @@ def augmentation_cubes(data, max_shift, augm_params):
     sub_data_r = blurred[max_shift - shift_x: s_x + max_shift - shift_x, max_shift + shift_y: s_y + max_shift + shift_y,
                          max_shift + shift_z: s_z + max_shift + shift_z]
     return sub_data_l, sub_data_r  # return two augmented cubes
-
-
-"""
-if index is 1
-"""
 
 
 def process_mean_hippocampus(list_item, data_params):
@@ -93,7 +88,7 @@ def process_mean_hippocampus(list_item, data_params):
 
 def process_cube_HIPP(list_item, data_params):
     nii = ""
-    nii = daf.get_nii_from_folder(list_item[1])[0]  # get first found files (nii) from dir
+    nii = daf.get_nii_from_folder(list_item[1])[0]  # get first found file (nii) from dir
     array = tls.nii_to_array(nii, np.float)
     padding_param = int(data_params['padding_size'])
     max_shift_param = int(data_params['shift'])
@@ -110,6 +105,18 @@ def process_cube_HIPP(list_item, data_params):
                  roi_hipp_r_params[4] - 1 - max_shift_param - padding_param, roi_hipp_r_params[5] - 1 - max_shift_param + padding_param)
 
     return crop_cubes(sub_l, sub_r, new_crp_l, new_crp_r)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
