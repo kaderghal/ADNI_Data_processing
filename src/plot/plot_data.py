@@ -35,23 +35,25 @@ def plot_HIPP(data_roi, projection, slc_index_begin, slc_index_end):
 
 
 
-def get_sag_slices(data_L, data_R, slc_index_begin, slc_index_end):        
+def get_sag_slices(data_L, data_R, sag_l, sag_r):        
     # sagittal slices
-    selected_data_L = data_L[slc_index_begin:slc_index_end, :, :]
+    selected_data_L = data_L[sag_l[0]:sag_l[1], :, :]
     sag_data_L = np.transpose(selected_data_L, (0, 1, 2)) # 3,28,28
-    selected_data_R = data_R[slc_index_begin:slc_index_end, :, :]
+    selected_data_R = data_R[sag_r[0]:sag_r[1], :, :]
     sag_data_R = np.transpose(selected_data_R, (0, 1, 2)) # 3,28,28  
     container_L = np.zeros((sag_data_L.shape[1], sag_data_L.shape[2], 3)) # 28,28,3  
+
+    print(container_L.shape, sag_l)
     container_L[:, :, 0], container_L[:, :, 1], container_L[:, :, 2] = [np.array(tls.matrix_rotation(sag_data_L[i, :, :])) for i in range(3)]  
     container_R = np.zeros((sag_data_R.shape[1], sag_data_R.shape[2], 3)) # 28,28,3  
     container_R[:, :, 0], container_R[:, :, 1], container_R[:, :, 2] = [np.array(tls.matrix_rotation(sag_data_R[i, :, :])) for i in range(3)]       
     return container_L, container_R
 
-def get_cor_slices(data_L, data_R, slc_index_begin, slc_index_end):        
+def get_cor_slices(data_L, data_R, cor_l, cor_r):        
     # sagittal slices
-    selected_data_L = data_L[:, slc_index_begin:slc_index_end, :]
+    selected_data_L = data_L[:, cor_l[0]:cor_l[1], :]
     cor_data_L = np.transpose(selected_data_L, (1, 0, 2)) # 3,28,28
-    selected_data_R = data_R[:, slc_index_begin:slc_index_end, :]
+    selected_data_R = data_R[:, cor_r[0]:cor_r[1], :]
     cor_data_R = np.transpose(selected_data_R, (1, 0, 2)) # 3,28,28        
     container_L = np.zeros((cor_data_L.shape[1], cor_data_L.shape[2], 3)) # 28,28,3  
     container_L[:, :, 0], container_L[:, :, 1], container_L[:, :, 2] = [np.array(tls.matrix_rotation(cor_data_L[i, :, :])) for i in range(3)]  
@@ -60,11 +62,11 @@ def get_cor_slices(data_L, data_R, slc_index_begin, slc_index_end):
     return container_L, container_R
 
 
-def get_axi_slices(data_L, data_R, slc_index_begin, slc_index_end):        
+def get_axi_slices(data_L, data_R, axi_l, axi_r):        
     # sagittal slices
-    selected_data_L = data_L[:, :, slc_index_begin:slc_index_end]
+    selected_data_L = data_L[:, :, axi_l[0]:axi_l[1]]
     axi_data_L = np.transpose(selected_data_L, (2, 0, 1)) # 3,28,28
-    selected_data_R = data_R[:, :, slc_index_begin:slc_index_end]
+    selected_data_R = data_R[:, :, axi_r[0]:axi_r[1]]
     axi_data_R = np.transpose(selected_data_R, (2, 0, 1)) # 3,28,28        
     container_L = np.zeros((axi_data_L.shape[1], axi_data_L.shape[2], 3)) # 28,28,3  
     container_L[:, :, 0], container_L[:, :, 1], container_L[:, :, 2] = [np.array(tls.matrix_rotation(axi_data_L[i, :, :])) for i in range(3)]  
@@ -75,12 +77,15 @@ def get_axi_slices(data_L, data_R, slc_index_begin, slc_index_end):
 
 
 
+def plot_ROI_all(data_roi_L, data_roi_R, left_dims, right_dims):
 
-def plot_ROI_all(data_roi_L, data_roi_R, slc_index_begin, slc_index_end):      
+    sag_l, cor_l, axi_l = left_dims     
+    sag_r, cor_r, axi_r = right_dims
+
     # sagittal slices
-    sag_L, sag_R = get_sag_slices(data_roi_L, data_roi_R, slc_index_begin, slc_index_end)
-    cor_L, cor_R = get_cor_slices(data_roi_L, data_roi_R, slc_index_begin, slc_index_end)
-    axi_L, axi_R = get_axi_slices(data_roi_L, data_roi_R, slc_index_begin, slc_index_end)
+    sag_L, sag_R = get_sag_slices(data_roi_L, data_roi_R, sag_l, sag_r)
+    cor_L, cor_R = get_cor_slices(data_roi_L, data_roi_R, cor_l, cor_r)
+    axi_L, axi_R = get_axi_slices(data_roi_L, data_roi_R, axi_l, axi_r)
 
     # plot 2D slice from ROI (m-1, m, m+1) 
     for i in range(3):

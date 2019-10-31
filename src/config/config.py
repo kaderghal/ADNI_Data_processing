@@ -78,6 +78,7 @@ ADNI_CLASSES = {
 ROI_PARAMS_GLOBAL = {
     '3D_or_2D': '3D', # extract data   
     'padding_size': 0,  # =>  28 + (x*2)  
+    'neighbors': 1, # number of neighbors of the median slice if 2D is selected
 }
 
 ROI_PARAMS_HIPP = {

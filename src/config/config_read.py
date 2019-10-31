@@ -46,6 +46,7 @@ def get_roi_params_global():
     tempo_dict = {}
     tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_GLOBAL['3D_or_2D']
     tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_GLOBAL['padding_size'])
+    tempo_dict['neighbors'] = int(cfg.ROI_PARAMS_GLOBAL['neighbors'])    
     return tempo_dict
 
 
