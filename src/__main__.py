@@ -7,6 +7,7 @@ import services.generate_sample_sets as gss
 import io_data.data_acces_file as daf
 import config.config_read as rsd
 import config.config as cfg
+import config.ColorPrompt as CP
 import time
 
 
@@ -15,9 +16,9 @@ import time
 # __main__ ::function
 ###############################################################################################################
 def main():
-    print('\n' + cfg.bcolors.OKBLUE +'----------------------------------------------------------------------------------------------------------')
+    print('\n' + CP.bcolors.OKBLUE +'----------------------------------------------------------------------------------------------------------')
     print('---------------------------- Preproccing dataset Alzheimer Diseases ADNI ---------------------------------')
-    print('----------------------------------------------------------------------------------------------------------\n' +  cfg.bcolors.ENDC)
+    print('----------------------------------------------------------------------------------------------------------\n' +  CP.bcolors.ENDC)
 
     iprint.print_global_params()
     iprint.print_adni_datasets_path()
@@ -36,15 +37,15 @@ def main():
     print('----------------------------------------------------------------------------------------------------------\n\n')
     start_time = time.time()
     localtime = time.localtime(time.time())
-    print(cfg.bcolors.OKBLUE + "==========================================================================")
+    print(CP.bcolors.OKBLUE + "==========================================================================")
     print('=      The dataset will be splitted to Train & Validation & Test         =')
     print('=      Start Time : {}                                  ='.format(time.strftime('%Y-%m-%d %H:%M:%S', localtime)))
-    print("==========================================================================" + cfg.bcolors.ENDC)
+    print("==========================================================================" + CP.bcolors.ENDC)
     print("\n")
     
         
         
-    exit_input = raw_input('\n' + cfg.bcolors.WARNING + 'To change the parameters. exit and update the \"config.py\" file \nto continue press yes (Y/n) ?' + cfg.bcolors.ENDC)
+    exit_input = raw_input('\n' + CP.bcolors.WARNING + 'To change the parameters. exit and update the \"config.py\" file \nto continue press yes (Y/n) ?' + CP.bcolors.ENDC)
     exit_bool = False if str(exit_input).lower() == 'y' else True
     if exit_bool:
         print '\n Exiting ...!  ;) \n'

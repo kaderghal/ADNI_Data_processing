@@ -11,6 +11,7 @@ import io_data.data_acces_file as daf
 import interface.inline_print as iprint
 import config.config_read as rsd
 import config.config as cfg
+import config.ColorPrompt as CP
 import services.process as prc
 import plot.plot_data as plot_data
 import time
@@ -224,9 +225,9 @@ def generate_lmdb_from_selected_data(data_params, lists_with_names, selected_lab
 #######################################################################################################
 def generate_lmdb(data_params, lst, lmdb_name, label_code):
 
-    print(cfg.bcolors.OKBLUE +"------------------------------------------------------------------------")
+    print(CP.bcolors.OKBLUE +"------------------------------------------------------------------------")
     print("--------------- creating of {} data lmdb ... ---------------------------".format(data_params['3D_or_2D']))
-    print("------------------------------------------------------------------------\n" + cfg.bcolors.ENDC)
+    print("------------------------------------------------------------------------\n" + CP.bcolors.ENDC)
     if data_params['3D_or_2D'] == '2D':
         generate_2D_data(data_params, lst, lmdb_name, label_code)
     else:
@@ -311,9 +312,9 @@ def process_extracting_3D_data(data_params, lst, lmdb_name, label_code, indice_R
     else:
         l, r = tls.get_dimensions_cubes_PPC(data_params)
 
-    print(cfg.bcolors.OKGREEN + "\t-----------------------------------------------------")
+    print(CP.bcolors.OKGREEN + "\t-----------------------------------------------------")
     print("\t---------------   {} is selected ...  -------------".format(indice_ROI))
-    print("\t-----------------------------------------------------\n" + cfg.bcolors.ENDC)
+    print("\t-----------------------------------------------------\n" + CP.bcolors.ENDC)
         
     list_sagittal_data = []
     list_axial_data = []
