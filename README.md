@@ -8,6 +8,25 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 * dataset: external URl to download the daset useed for the preprocessing 
 * sources: src code with python language.
 
+
+
+## Requirements
+
+* [PyTorch](http://pytorch.org/)
+
+```bash
+conda install pytorch 
+```
+
+* FFmpeg, FFprobe
+
+```bash
+wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+tar xvf ffmpeg-release-64bit-static.tar.xz
+cd ./ffmpeg-3.3.3-64bit-static/; sudo cp ffmpeg ffprobe /usr/local/bin;
+```
+
+* Python 3
 # Requirements
 
 1. Linux (Ubuntu Distribution : 18.04 LTS)
@@ -24,10 +43,12 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 ..* Caffe or
 ..* Tensorflow
 
+### Performance of the models on Kinetics
 - List of Acronyms:
+This table shows the averaged accuracies over top-1 and top-5 on Kinetics.
 
 | Abvs.| meaning                     |
-|------|-----------------------------|
+|:---|:---:|
 | AD   | Alzheimer's Disease         |
 | MCI  | Mild Co,gnitive Impairment  |
 | NC   | Normal Control              |
@@ -37,7 +58,8 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 | HIPP | Hippocampus                 |
 
 
-## Author
+
+### Author
 ADERGHAL KARIM 2019
 LaBRI - University of Bordeaux - Bordeaux/France
 LabSIV - University Ibn Zohr - Agadir/Morocco
@@ -45,3 +67,18 @@ email: {aderghal}.{karim}@gmail.com
 email: {karim}.{aderghal}@labri.fr
 [link text itself]: 
 [http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
+
+
+## Citation
+
+If you use this code or pre-trained models, please cite the following:
+
+```bibtex
+@inproceedings{hara3dcnns,
+  author={Kensho Hara and Hirokatsu Kataoka and Yutaka Satoh},
+  title={Can Spatiotemporal 3D CNNs Retrace the History of 2D CNNs and ImageNet?},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={6546--6555},
+  year={2018},
+}
+```

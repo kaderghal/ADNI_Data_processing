@@ -1,0 +1,74 @@
+numpy.stack
+
+https://www.kaggle.com/pinocookie/pytorch-dataset-and-dataloader
+
+https://qiita.com/JUN_NETWORKS/items/65cc313e810cc6b31098
+
+https://discuss.pytorch.org/t/save-dataset-into-pt-file/25293/5
+
+https://pytorch.org/docs/stable/data.html
+
+https://gist.github.com/kevinzakka/d33bf8d6c7f06a9d8c76d97a7879f5cb
+
+https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad
+
+https://www.kaggle.com/leighplt/pytorch-tutorial-dataset-data-preparetion-stage
+https://stackoverflow.com/questions/44429199/how-to-load-a-list-of-numpy-arrays-to-pytorch-dataset-loader
+
+https://github.com/xiayandi/Pytorch_text_classification
+
+https://forums.fast.ai/t/out-of-core-data-block-itemlist-backed-up-by-memmap-files/39566
+
+http://www.machinelearninguru.com/deep_learning/data_preparation/hdf5/hdf5.html
+
+https://towardsdatascience.com/hdf5-datasets-for-pytorch-631ff1d750f5
+
+
+You could try to lazily load each data sample in order to avoid preloading the whole dataset.
+Using multiple workers might hide the loading time, so that your GPU won’t be starving.
+
+
+
+
+
+
+
+
+
+
+
+numpy.memmap
+
+
+
+
+
+
+
+
+
+
+
+# Example
+# I am assuming trX is a list of image arrays (1, 224, 224, 3)
+# of length L = 0.8 * len(files)
+>>> import numpy as np
+>>> a = np.asarray(trX)
+>>> a.shape # should be (L, 1, 224, 224, 3)
+>>> a = np.squeeze(a, axis=1) # shape should now be (L, 224, 224, 3)
+>>> import torch
+>>> b = torch.floatTensor(a) # or torch.from_numpy(a)
+
+
+import torch
+import numpy as np
+import torch.utils.data as utils
+
+my_x = [np.array([[1.0,2],[3,4]]),np.array([[5.,6],[7,8]])] # a list of numpy arrays
+my_y = [np.array([4.]), np.array([2.])] # another list of numpy arrays (targets)
+
+tensor_x = torch.stack([torch.Tensor(i) for i in my_x]) # transform to torch tensors
+tensor_y = torch.stack([torch.Tensor(i) for i in my_y])
+
+my_dataset = utils.TensorDataset(tensor_x,tensor_y) # create your datset
+my_dataloader = utils.DataLoader(my_dataset) # create your dataloader
