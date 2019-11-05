@@ -1,7 +1,4 @@
-###########################################################
-# ADERGHAL Karim 2019
-# Generate lists
-##########################################################
+#!/usr/bin/python
 
 from PIL import Image
 import scipy.misc
@@ -17,10 +14,12 @@ import plot.plot_data as plot_data
 import time
 import math
 
-#######################################################################################################
-#   generate_lists() : function generates and saves list of data of MRI with augmentation
+
+#------------------------------------------------------------------------------------------
+# Function: generate_lists() generates and saves list of data of MRI with augmentation
 #   (tain, Valid and Test) 
-#######################################################################################################
+#------------------------------------------------------------------------------------------
+
 def generate_lists(data_params):
     list_data = []
     file_path = data_params['adni_data_des'] + tls.get_convention_name(data_params) + '/List_data.pkl'
@@ -29,9 +28,10 @@ def generate_lists(data_params):
     daf.save_lists_to_file(path_file=file_path, data_list=list_data)
 
 
-#######################################################################################################
-#   split data by using class name (txt file)
-#######################################################################################################
+#------------------------------------------------------------------------------------------
+# Function: split data by using class name (from txt file)
+#------------------------------------------------------------------------------------------
+
 def split_classses_data(liste):
     liste_AD = []
     liste_MCI = []
@@ -49,10 +49,10 @@ def split_classses_data(liste):
             liste_NC.append(item.split(':')[0])
     return liste_AD, liste_MCI, liste_NC
 
+#------------------------------------------------------------------------------------------
+# Function: generates lists from ADNI folder dataset
+#------------------------------------------------------------------------------------------
 
-#######################################################################################################
-#   generate lists from ADNI folder dataset
-#######################################################################################################
 def get_subjects_with_classes(data_params):
     AD, MCI, NC = split_classses_data(daf.read_data_file(str(data_params['adni_1_classes'])))
     iprint.print_adni_desc([AD, MCI, NC])
@@ -60,13 +60,11 @@ def get_subjects_with_classes(data_params):
     return [AD, MCI, NC]
 
 
+#------------------------------------------------------------------------------------------
+# Function: generates lists from ADNI folder dataset
+#------------------------------------------------------------------------------------------
 
-#######################################################################################################
-#   generate lists from ADNI folder dataset
-#######################################################################################################
 def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=False, debug=False):  # augm_test bool
-
-    import numpy.random as rnd
     stage_classes = ['AD', 'MCI', 'NC']
     max_blur = float(data_params['sigma'])
     max_shift = int(data_params['shift'])
@@ -76,7 +74,7 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
     adni_1_labels = {'AD': adni1_list[0], 'MCI': adni1_list[1], 'NC': adni1_list[2]}
     adni_1_dirs_root = {k: [data_params['adni_1_brain_data'] + '/' + i for i in adni_1_labels[k]] for k in stage_classes}
 
-    # test statement for spliting data (check "SPLIT_SET_PARAMS" in config file)
+    # Test statement for spliting data (check "SPLIT_SET_PARAMS" in config file)
     if(data_params['static_split']):
         test_selected_size = {k: int(data_params['select_test'][k]) for k in stage_classes}
         valid_selected_size = {k: int(data_params['select_valid'][k]) for k in stage_classes} 
@@ -84,7 +82,6 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
         test_selected_size = {k: int(data_params['select_test'][k]) for k in stage_classes}
         valid_selected_size = {k: int(math.ceil(int(adni1_size[k]) * 20) / 100.0) for k in stage_classes} 
     
-
     print('\n\n')
     print('-------------------------------------------------------------------------------------------')
     print('------  source patients ADNI 1 (sMRI)', adni1_size)
@@ -109,27 +106,22 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
     print('* [test]  data will be not augmented {} samples by each class'.format(adni_1_test_size))
     print('---------------------------------------------------------------------\n')
     
-    
+    # print table of data augmentation
     iprint.print_augmentation_table([adni_1_train_size_balanced, adni_1_valid_size_balanced, adni_1_test_size])
-    
-  
+      
     adni_1_train_lists_out = []
     adni_1_valid_lists_out = []
     adni_1_test_lists_out = []
 
     for k in stage_classes:
-
-        adni_1_test_lists = [[k, i + '/MRI/'] for i in adni_1_test[k]]
+        adni_1_test_lists =  [[k, i + '/MRI/'] for i in adni_1_test[k]]
         adni_1_valid_lists = [[k, i + '/MRI/'] for i in adni_1_valid[k]]
         adni_1_train_lists = [[k, i + '/MRI/'] for i in adni_1_train[k]]
        
-
         adni_1_test_lists_out += tls.generate_augm_lists_v2(adni_1_test_lists, None, None, None, default_augm_params=default_augm)
         adni_1_valid_lists_out += tls.generate_augm_lists_v2(adni_1_valid_lists, adni_1_valid_size_balanced, max_blur, max_shift, default_augm_params=default_augm)
         adni_1_train_lists_out += tls.generate_augm_lists_v2(adni_1_train_lists, adni_1_train_size_balanced, max_blur, max_shift, default_augm_params=default_augm)
- 
-        
-
+   
         if shuffle_data:
             rnd.shuffle(adni_1_train_lists_out)
             rnd.shuffle(adni_1_valid_lists_out)
@@ -160,7 +152,6 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
             time.sleep(3)
             # ########################
 
-    # return []
     return [adni_1_train_lists_out, adni_1_valid_lists_out, adni_1_test_lists_out]
 
 
@@ -212,7 +203,6 @@ def generate_data_from_selected_dataset(data_params, lists_with_names, selected_
 #------------------------------------------------------------------------------------------
 # generate Data (2D slices patches or 3D Volumes)
 #------------------------------------------------------------------------------------------
-
 def generate_data(data_params, lst, data_name, label_code):
     print(CP.bcolors.OKBLUE +"------------------------------------------------------------------------")
     print("--------------- creating of {} data ... ---------------------------".format(data_params['3D_or_2D']))
@@ -246,7 +236,6 @@ def generate_3D_data(data_params, lst, data_name, label_code):
 #------------------------------------------------------------------------------------------
 # 2D extracting for pytorch
 #------------------------------------------------------------------------------------------
-
 def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP"):
     
 
@@ -292,7 +281,6 @@ def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_R
 #------------------------------------------------------------------------------------------
 # 3D extracting for pytorch
 #------------------------------------------------------------------------------------------
-
 def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP"): 
     
     if("HIPP" in indice_ROI):
@@ -312,8 +300,8 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     names = ['sag', 'cor', 'axi']
     list_cord_l = [int(l[i+1] - l[i]) for i in range(0, 6, 2)]
     list_cord_r = [int(r[i+1] - r[i]) for i in range(0, 6, 2)]
-    # compute the indexes for selected slices
 
+    # compute the indexes for selected slices
     neighbors = int(data_params['neighbors'])
     sag_l, cor_l, axi_l = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "l_" + str(names[j]) : list_cord_l[j] for j in range(len(list_cord_l))}.values()]
     sag_r, cor_r, axi_r = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "r_" + str(names[j]) : list_cord_r[j] for j in range(len(list_cord_r))}.values()]

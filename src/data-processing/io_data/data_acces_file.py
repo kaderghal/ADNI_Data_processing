@@ -1,13 +1,12 @@
+#!/usr/bin/python
 
-###########################################################
-# ADERGHAL Karim 2019
-# Data Access Files
-##########################################################
 import os
-# import lmdb # torch
 import services.tools as tls
+# import lmdb # torch
 
-
+#------------------------------------------------------------------------------------------
+# DAF: Data access File: Files & Folders processsing
+#------------------------------------------------------------------------------------------
 
 def get_nii_from_folder(folder):
     res = []
@@ -18,7 +17,6 @@ def get_nii_from_folder(folder):
     if len(res) > 1:
         print('WARNING. Folder %s contains more than one files' % folder)
     return res
-
 
 def initiate_lmdb(folder_path, lmdb_name, drop_existing=False):  # save data to lmdb Folder
     saving_path = folder_path + '/' + lmdb_name
@@ -32,17 +30,14 @@ def initiate_lmdb(folder_path, lmdb_name, drop_existing=False):  # save data to 
     # print('database debug info:', env.stat())
     return env
 
-
-"""
-# save parameters to re-use it latter in next execution...
-"""
-
+#------------------------------------------------------------------------------------------
+# Save parameters to file to use it later in call 
+#------------------------------------------------------------------------------------------
 
 def save_data_params(data_params):
     import pickle
     import os
     import errno
-
     path_file = data_params['adni_data_des'] + tls.get_convention_name(data_params) + '/Data_params.pkl'
     try:
         os.makedirs(os.path.dirname(path_file))
@@ -52,6 +47,9 @@ def save_data_params(data_params):
     with open(path_file, 'wb') as f:
         pickle.dump(data_params, f)
 
+#------------------------------------------------------------------------------------------
+# Read parameters from the file "Data_params.pkl"  
+#------------------------------------------------------------------------------------------
 
 def read_data_params(path_file):
     import pickle
@@ -82,15 +80,13 @@ def save_lists_to_file(path_file, data_list):
         pickle.dump(data_list, f)
 
 
-"""
-read data from file line by line to a List
-"""
-
+#------------------------------------------------------------------------------------------
+# read data from file line by line to a List
+#------------------------------------------------------------------------------------------
 
 def read_data_file(path_file):
     with open(path_file) as f:
         content = f.readlines()
-
     return [item.strip() for item in content]
 
 

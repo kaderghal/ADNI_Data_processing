@@ -19,7 +19,7 @@ TIMEZONE = 'France/Bordeaux'
 #------------------------------------------------------------------------------------------
 AUTHOR_INFO = {
     'name': 'Alz_ADNI_process',
-    'version': '1.3',
+    'version': '1.2',
     'year': '2019',
     'description': 'Extracting data for CNN Alzheimer\'s Disease Classification',
     'url': 'http://github.com/kaderghal',
