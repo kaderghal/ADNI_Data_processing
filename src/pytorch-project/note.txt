@@ -23,6 +23,8 @@ http://www.machinelearninguru.com/deep_learning/data_preparation/hdf5/hdf5.html
 
 https://towardsdatascience.com/hdf5-datasets-for-pytorch-631ff1d750f5
 
+https://github.com/kevinzakka/one-shot-siamese/blob/master/data_loader.py
+
 
 You could try to lazily load each data sample in order to avoid preloading the whole dataset.
 Using multiple workers might hide the loading time, so that your GPU won’t be starving.
