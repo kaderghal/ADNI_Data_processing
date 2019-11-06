@@ -315,6 +315,7 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     
     print(target_path + '\n')
     
+    data_holder = []
     
     key = 0
     for input_line in lst:
@@ -333,11 +334,20 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         # # [ID, Date, Class, Age, Sex, MMSE]
         subject_ID = str(input_line[1]).split('/')[7] 
         meta_data = tls.get_meta_data_xml(data_params, subject_ID)
-        print(meta_data, binary_label, data_set, label_code[input_line[0]])
+        # print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
         # create the model for Dataloader (pytorch)
         model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))
+        
+        
+        
+        ######## §!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        data_holder.append(model)
+        ###  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+
+        
         # # Model
         print("Model :{} - {} - {}".format(model.hippLeft.shape, model.hippMetaDataVector, model.hippLabel))
 
@@ -368,5 +378,10 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         key += 1
         
     print("\n#================================ End Creating 3D data  ===========================================#\n\n")
+
+    # save array to file
+
+    print("Path :", target_path + '/'+ binary_label)
+    data_holder
 
 
