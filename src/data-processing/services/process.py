@@ -95,29 +95,20 @@ def process_cube_HIPP(list_item, data_params):
 
     # Augmentations cubes
     sub_l, sub_r = augmentation_cubes(array, max_shift_param, list_item[2])
-    roi_hipp_l_params = data_params['hipp_left']  # Hippocampus ROI corrdinates(x,x,y,y,z,z)
+
+    # Hippocampus ROI coordinates(x,x,y,y,z,z)
+    roi_hipp_l_params = data_params['hipp_left']  
     roi_hipp_r_params = data_params['hipp_right']
+
     new_crp_l = (roi_hipp_l_params[0] - 1 - max_shift_param - padding_param, roi_hipp_l_params[1] - 1 - max_shift_param + padding_param,
                  roi_hipp_l_params[2] - 1 - max_shift_param - padding_param, roi_hipp_l_params[3] - 1 - max_shift_param + padding_param,
                  roi_hipp_l_params[4] - 1 - max_shift_param - padding_param, roi_hipp_l_params[5] - 1 - max_shift_param + padding_param)
+    
     new_crp_r = (roi_hipp_r_params[0] - 1 - max_shift_param - padding_param, roi_hipp_r_params[1] - 1 - max_shift_param + padding_param,
                  roi_hipp_r_params[2] - 1 - max_shift_param - padding_param, roi_hipp_r_params[3] - 1 - max_shift_param + padding_param,
                  roi_hipp_r_params[4] - 1 - max_shift_param - padding_param, roi_hipp_r_params[5] - 1 - max_shift_param + padding_param)
 
     return crop_cubes(sub_l, sub_r, new_crp_l, new_crp_r)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -140,3 +131,14 @@ def process_cube_PPC(list_item, data_params):
                  roi_pcc_r_params[4] - 1 - max_shift_param - padding_param, roi_pcc_r_params[5] - 1 - max_shift_param + padding_param)
 
     return crop_cubes(sub_l, sub_r, new_crp_l, new_crp_r)
+
+
+
+
+
+
+# ########## compute desctable
+# def compute_demography_description(data_params):
+#     # from text file
+#     AD, MCI, NC = gss.split_classses_data(daf.read_data_file(str(data_params['adni_1_classes'])))
+#     print("AD {} - MCI {} - NC {}".format(len(AD), len(MCI), len(NC)))

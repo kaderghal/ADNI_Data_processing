@@ -15,13 +15,27 @@ def find_xml_file(data_params, subject_ID):
 def read_xml_file(path_file):
     return ET.parse(path_file).getroot()
 
-# get [class, MMSE score, Subject Sex, Age]
+# get  [ID, Date, Class, Age, Sex, MMSE] 
 def get_Subject_info(data_params, subject_ID):
     root = find_xml_file(data_params, subject_ID)
     # models
+
+    _Date_Acquisition = root.findall('.//project/subject/study/series/dateAcquired')[0].text
     _Groupe_ = root.findall('.//project/subject/subjectInfo/[@item="DX Group"]')[0].text
-    _MMSE_ = root.findall('.//project/subject/visit/assessment/[@name="MMSE"]/component/assessmentScore')[0].text
     _AGE_ = root.findall('.//project/subject/study/subjectAge')[0].text
     _SEX_ = root.findall('.//project/subject/subjectSex')[0].text
-    
-    return [_Groupe_, subject_ID, _SEX_, _AGE_, _MMSE_]
+    _MMSE_ = root.findall('.//project/subject/visit/assessment/[@name="MMSE"]/component/assessmentScore')[0].text
+
+    _Groupe_ =  convert_class_name(_Groupe_)
+    return [subject_ID, _Date_Acquisition, _Groupe_, _AGE_, _SEX_, _MMSE_]
+
+
+# Convert class name
+def convert_class_name(groupe):
+    if 'MCI' in groupe:
+        return "MCI"
+    if 'Normal' in groupe:
+        return "NC"
+    if 'AD' in groupe:
+        return "AD"
+        

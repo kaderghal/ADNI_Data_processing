@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from PIL import Image
+from models.HippModel import HippModel
 import scipy.misc
 import numpy as np
 import services.tools as tls
@@ -319,26 +320,35 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     for input_line in lst:
         
         # Mean ROI (L & R)
-        data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
+        # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
         
         # Left and Right ROI 
         data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        # Fliped Felt & Right ROI       
+        # # Fliped Felt & Right ROI       
         data_roi_left_flip = prc.flip_3d(data_roi_left)
         data_roi_right_flip = prc.flip_3d(data_roi_right)
         
-        subject_ID = str(input_line[1]).split('/')[7]
-        
-        # [Age, Id, Sex, MMSE]
+                
+        # # [ID, Date, Class, Age, Sex, MMSE]
+        subject_ID = str(input_line[1]).split('/')[7] 
         meta_data = tls.get_meta_data_xml(data_params, subject_ID)
-        print(meta_data)
+        print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
-        print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, data_name, label_code[input_line[0]])
+        # create the model for Dataloader (pytorch)
+        model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))
 
-        print("augmentation ", input_line[2])
+        # # Model
+        print("Model :{} - {} - {}".format(model.hippLeft.shape, model.hippMetaDataVector, model.hippLabel))
+
+
+
+
+        # print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, data_name, label_code[input_line[0]])
+
+        # print("augmentation ", input_line[2])
         #plot Data
-        plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
+        # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
 
 
         # plot_data.plot_ROI_all(data_roi_right, data_roi_left_flip, slc_index_begin, slc_index_end)
@@ -349,6 +359,9 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         # plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
         # plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
         # plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
+
+
+
 
 
 

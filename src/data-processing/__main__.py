@@ -21,7 +21,8 @@ def main():
     print('----------------------------------------------------------------------------------------------------------\n' +  CP.bcolors.ENDC)
 
 
-    # Computes des Table
+
+
     # Display Data Parameters
     iprint.print_global_params()
     iprint.print_adni_datasets_path()
@@ -32,6 +33,9 @@ def main():
     iprint.print_label_binary_codes()
     data_params = rsd.get_all_data_params()
     
+    # Computes des Table
+    
+
     HIPP_l, HIPP_r = tls.get_dimensions_cubes_HIPP(data_params)
     PPC_l, PPC_r = tls.get_dimensions_cubes_PPC(data_params)
     iprint.print_dimensions_cubes_HIPP(HIPP_l, HIPP_r )

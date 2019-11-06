@@ -13,7 +13,7 @@ from PIL import Image
 def plot_ROI(data_roi, projection, slc_index_begin, slc_index_end):    
     if projection == 0: # sag
         selected_data = data_roi[slc_index_begin:slc_index_end, :, :]
-        data = np.transpose(selected_data, (0, 1, 2)) # for exampel 3,28,28
+        data = np.transpose(selected_data, (0, 1, 2)) # for example 3,28,28
     elif projection == 1: # cor
         data = data_roi[:, slc_index_begin:slc_index_end, :]
         data = np.transpose(data, (1, 0, 2))
