@@ -316,7 +316,7 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     print(target_path + '\n')
     
     data_holder = []
-    
+    data_size = 0
     key = 0
     for input_line in lst:
         
@@ -326,38 +326,41 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         # Left and Right ROI 
         data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        # # Fliped Felt & Right ROI       
+        # Fliped Felt & Right ROI       
         data_roi_left_flip = prc.flip_3d(data_roi_left)
         data_roi_right_flip = prc.flip_3d(data_roi_right)
         
                 
-        # # [ID, Date, Class, Age, Sex, MMSE]
+        # [ID, Date, Class, Age, Sex, MMSE]
         subject_ID = str(input_line[1]).split('/')[7] 
         meta_data = tls.get_meta_data_xml(data_params, subject_ID)
         # print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
         # create the model for Dataloader (pytorch)
         model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))
+        # # from sys import getsizeof
+        # # data_size += getsizeof(model)
+        # # print("size of : {}".format(getsizeof(model)))        
         
-        
-        
-        ######## §!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        data_holder.append(model)
-        ###  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       
+        model_abs_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name + '_' + subject_ID + '.pkl'
+
+
+        # # store data model
+
+        daf.save_model(model, model_abs_path)
+        print("Done: {}".format(model_abs_path))
+
+        # # # Model
+        # print("Model :{} - {} - {}".format(model.hippLeft.shape, model.hippMetaDataVector, model.hippLabel))
 
 
 
-        
-        # # Model
-        print("Model :{} - {} - {}".format(model.hippLeft.shape, model.hippMetaDataVector, model.hippLabel))
 
+        # # print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, data_name, label_code[input_line[0]])
 
-
-
-        # print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, data_name, label_code[input_line[0]])
-
-        # print("augmentation ", input_line[2])
-        #plot Data
+        # # print("augmentation ", input_line[2])
+        # #plot Data
         # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
 
 
@@ -381,7 +384,7 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
 
     # save array to file
 
-    print("Path :", target_path + '/'+ binary_label)
-    data_holder
+    print("Path :", target_path + binary_label + '/' + str(data_set) + '/')
+    print("Total size: {}".format(data_size))
 
 

@@ -55,8 +55,6 @@ class HippModel:
     def hippLabel(self, value):
         self._hippLabel = value
 
-
-
     # Getters
     @hippRight.getter
     def hippRight(self):

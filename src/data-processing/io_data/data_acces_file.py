@@ -2,6 +2,8 @@
 
 import os
 import services.tools as tls
+import pickle
+import errno
 # import lmdb # torch
 
 #------------------------------------------------------------------------------------------
@@ -35,9 +37,6 @@ def initiate_lmdb(folder_path, lmdb_name, drop_existing=False):  # save data to 
 #------------------------------------------------------------------------------------------
 
 def save_data_params(data_params):
-    import pickle
-    import os
-    import errno
     path_file = data_params['adni_data_des'] + tls.get_convention_name(data_params) + '/Data_params.pkl'
     try:
         os.makedirs(os.path.dirname(path_file))
@@ -60,7 +59,6 @@ def read_data_params(path_file):
 
 
 def read_lists_from_file(path_file):
-    import pickle
     dir_name = os.path.dirname(path_file)
     with open(path_file, 'rb') as f:
         data_list = pickle.load(f)
@@ -93,7 +91,31 @@ def read_data_file(path_file):
 
 
 
+#------------------------------------------------------------------------------------------
+# Save Model to Local Machine 
+#------------------------------------------------------------------------------------------
 
+def save_model(model, path_file):
+
+    try:
+        os.makedirs(os.path.dirname(path_file))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    with open(path_file, 'wb') as f:
+        pickle.dump(model, f)
+
+
+
+#------------------------------------------------------------------------------------------
+# Read Model to Local Machine 
+#------------------------------------------------------------------------------------------
+
+def read_model(path_file):
+    dir_name = os.path.dirname(path_file)
+    with open(path_file, 'rb') as f:
+        model = pickle.load(f)
+    return model
 
 
 

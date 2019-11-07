@@ -41,6 +41,10 @@ def main():
     iprint.print_dimensions_cubes_HIPP(HIPP_l, HIPP_r )
     iprint.print_dimensions_cubes_PPC(PPC_l, PPC_r)
     
+
+    #--------------------------------------------------------------------
+    # Start execution  Start Timing
+    #--------------------------------------------------------------------
     print('----------------------------------------------------------------------------------------------------------\n\n')
     start_time = time.time()
     localtime = time.localtime(time.time())
@@ -73,10 +77,17 @@ def main():
     
     #--------------------------------------------------------------------
     # [3] : generate data: 
-    #       -> by using the generated lists before [2]   
+    #       -> by using the generated lists in the step before [2]   
     #--------------------------------------------------------------------
     gss.generate_data_from_lists(data_params)
 
+    #--------------------------------------------------------------------
+    # Execution finished  
+    #--------------------------------------------------------------------
+    print(CP.bcolors.OKBLUE + "==========================================================================")
+    print('=      Finished Time : {}                               '.format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
+    print('=      Execution Time : {}                                 '.format(round((time.time() - start_time))))
+    print("=========================================================================="+ CP.bcolors.ENDC)
 
 
 #------------------------------------------------------------------------------------------
@@ -84,4 +95,5 @@ def main():
 #------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()
+
 
