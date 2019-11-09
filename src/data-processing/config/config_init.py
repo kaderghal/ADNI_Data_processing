@@ -76,6 +76,8 @@ ADNI_CLASSES = {
 # -> PPC: we will add it soon !!!!
 #------------------------------------------------------------------------------------------
 ROI_PARAMS_GLOBAL = {
+    'ROI_selection': 0, # HIPP: 0, PPC: 1, BOTH: 2
+    'ROI_list': {0 : 'HIPP', 1 : 'PPC', 2 :'BOTH'},
     '3D_or_2D': '3D', # extract data   
     'padding_size': 0,  # =>  28 + (x*2)  
     'neighbors': 1, # number of neighbors of the median slice if 2D is selected
@@ -104,7 +106,8 @@ ROI_PARAMS_PPC = {
 AUGMENTATION_PARAMS = {
     'shift': 2,  # Max Shift
     'sigma': 1.0,  # Max Sigma for Gaussian Blur
-    'factor': 1  # Augmentation Factor 
+    'factor': 1,  # Augmentation Factor 
+    'flip': False # excute the flip operation for cubes
 }
 
 #------------------------------------------------------------------------------------------

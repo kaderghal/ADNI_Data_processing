@@ -1,91 +1,92 @@
 #!/usr/bin/python
-import config.config as cfg
+
 import config.config_read as rsd
+import config.ColorPrompt as CP
 
 #------------------------------------------------------------------------------------------
 # Display Data: to print data (Terminal)
 #------------------------------------------------------------------------------------------
 
 def print_author_info():
-    print("Author Information :\n")
-    for k, v in rsd.get_author_info().iteritems():
-        print('\t[' + k + ']: ' + v)
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Author Information: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_author_info().items():
+        print('\t[' + k + ']: ' + str(v))
     print ("\n")
 
 def print_global_params():
-    print ("Global parameters :")
-    for key in rsd.get_global_params():
-        print('\t[' + key + ']: ' + rsd.get_global_params()[key])
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Global parameters: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_global_params().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_adni_datasets_path():
-    print("Datasets Images: ")
-    for k, v in rsd.get_adni_datasets().iteritems():
-        print('\t[' + k + ']: ' + v)
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Datasets Images: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_adni_datasets().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_classes_datasets_path():
-    print ("Classes Datasets Paths: ")
-    for key in rsd.get_classes_datasets():
-        print('\t[' + key + ']: ' + rsd.get_classes_datasets()[key])
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Classes Datasets Paths: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_classes_datasets().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_augmentation_params():
-    print ("Augmentation parameters: ")
-    for key in rsd.get_augmentation_params():
-        print('\t[' + key + ']: ' + str(rsd.get_augmentation_params()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Augmentation parameters: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_augmentation_params().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_split_params():
-    print("Splitting dataset parameters: ")
-    for key in rsd.get_split_params():
-        print('\t[' + key + ']: ' + str(rsd.get_split_params()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Splitting dataset parameters: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_split_params().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_roi_params_global():
-    print("Roi Global parameters: ")
-    for key in rsd.get_roi_params_global():
-        print('\t[' + key + ']: ' + str(rsd.get_roi_params_global()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Roi Global parameters: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_roi_params_global().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
         
 def print_roi_params_hippocampus():
-    print("Roi Hippocampus parameters: ")
-    for key in rsd.get_roi_params_hippocampus():
-        print('\t[' + key + ']: ' + str(rsd.get_roi_params_hippocampus()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Roi Hippocampus parameters: " + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_roi_params_hippocampus().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_roi_params_posterior_cc():
-    print("Roi Posterior CC parameters :")
-    for key in rsd.get_roi_params_posterior_cc():
-        print('\t[' + key + ']: ' + str(rsd.get_roi_params_posterior_cc()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Roi Posterior CC parameters :" + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_roi_params_posterior_cc().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
     
 def print_label_binary_codes():
-    print("Labels Binary Codes :")
-    for key in rsd.get_label_binary_codes():
-        print('\t[' + key + ']: ' + str(rsd.get_label_binary_codes()[key]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Labels Binary Codes :" + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_label_binary_codes().items():
+        print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_all_params_data():
-    print ("All parameters Data :")
-    for k, v in rsd.get_all_data_params().iteritems():
+    print (CP.style.BRIGHT + CP.fg.GREEN + "All parameters Data :" + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in rsd.get_all_data_params().items():
         print('\t[' + k + ']: ' + str(v))
     print("\n")
 
 def print_all_params_data_v2(data):
-    print("All parameters Data :")
-    for k, v in data.iteritems():
+    print(CP.style.BRIGHT + CP.fg.GREEN + "All parameters Data :" + CP.fg.RESET + CP.style.RESET_ALL)
+    for k, v in data.items():
         print('\t {} : {}'.format(k, v))
     print("\n")
 
 def print_dimensions_cubes_HIPP(l, r):
-    print("Hippocampus Cube (ROI) dimenssion after the extracting process :")
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Hippocampus Cube (ROI) dimenssion after the extracting process :" + CP.fg.RESET + CP.style.RESET_ALL)
     print('\tHippocampus L : ({}, {}, {})'.format(l[1] - l[0], l[3] - l[2], l[5] - l[4]))
     print('\tHippocampus R : ({}, {}, {})'.format(r[1] - r[0], r[3] - r[2], r[5] - r[4]))
     print("\n")
         
 def print_dimensions_cubes_PPC(l, r):
-    print("Posterior CC Cube (ROI) dimenssion after the extracting process :")
+    print(CP.style.BRIGHT + CP.fg.GREEN + "Posterior CC Cube (ROI) dimenssion after the extracting process :" + CP.fg.RESET + CP.style.RESET_ALL)
     print('\tPosterior_CC L : ({}, {}, {})'.format(l[1] - l[0], l[3] - l[2], l[5] - l[4]))
     print('\tPosterior_CC R : ({}, {}, {})'.format(r[1] - r[0], r[3] - r[2], r[5] - r[4]))
     print("\n")   
@@ -99,19 +100,41 @@ def print_adni_desc(adni1):
     print("\t| ADNI 1 |     {}   |    {}     |    {}      ------".format(len(adni1[0]), len(adni1[1]), len(adni1[2])))
     print("\t------------------------------------------------------")
 
-def print_augmentation_table(data):
-    print("\t------------------------------------------------------")
-    print("\t|                Augmentation DESC                   |")
-    print("\t------------------------------------------------------")
-    print("\t----------     AD    |     MCI    |    NC       ------")
-    print("\t------------------------------------------------------")
-    print("\t| Train |     {}   |    {}     |    {}      ------".format(data[0], data[0], data[0]))
-    print("\t------------------------------------------------------")
-    print("\t| Valid |     {}   |    {}     |    {}      ------".format(data[1], data[1], data[1]))
-    print("\t------------------------------------------------------")
-    print("\t| Test  |     {}   |    {}     |    {}      ------".format(data[2], data[2], data[2]))
-    print("\t------------------------------------------------------")
 
+
+
+
+def print_augmentation_table(data):
+    print(CP.style.BRIGHT + CP.fg.RED + "--------------------------------------------------------------------------")
+    print("|                               Augmentation DESC                        ")
+    print("--------------------------------------------------------------------------")
+    print("|         |        AD         |         MCI         |         NC          ")
+    print("--------------------------------------------------------------------------")
+    print("|  Train  |    {0} -> ({3})   |    {1} -> ({3})     |     {2} -> ({3})    ".format(data[0][0], data[0][1], data[0][2], data[0][3]))
+    print("--------------------------------------------------------------------------")
+    print("|  Valid  |    {0} -> ({3})     |    {1} -> ({3})       |     {2} -> ({3})    ".format(data[1][0], data[1][1], data[1][2], data[1][3]))
+    print("--------------------------------------------------------------------------")
+    print("|  Test   |    {0} -> ({3})     |    {1} -> ({3})       |     {2} -> ({3})    ".format(data[2][0], data[2][1], data[2][2], data[2][3]))
+    print("--------------------------------------------------------------------------" + CP.fg.RESET + CP.style.RESET_ALL)
+
+       
+def print_datasetDescription(data):
+    
+    print(CP.style.BRIGHT + CP.fg.CYAN + "----------------------------------------------------------------------------------------------------------")
+    print("|                                      ADNI-1 DESC                                                       |")
+    print("----------------------------------------------------------------------------------------------------------")
+    print("|        #Subject   |   Sex (F/M)       |    Age [min, max]/mean(std)   |    MMSE [min, max]/std         |")
+    print("----------------------------------------------------------------------------------------------------------")
+    print("| AD  |     {}     |     {}         |  {}   |    {}    |".format(data[0][1], data[0][2], data[0][3], data[0][4]))
+    print("----------------------------------------------------------------------------------------------------------")
+    print("| MCI |     {}     |     {}       |  {}    |    {}    |".format(data[1][1], data[1][2], data[1][3], data[1][4]))
+    print("----------------------------------------------------------------------------------------------------------")
+    print("| NC  |     {}     |     {}       |  {}   |    {}     |".format(data[2][1], data[2][2], data[2][3], data[2][4]))
+    print("----------------------------------------------------------------------------------------------------------\n" + CP.fg.RESET + CP.style.RESET_ALL)
+    
+    
+    
+    
     
 # def print_2D_or_3D_data():
 #     selected_decision = raw_input("Do you want create 3D Data roi or 2D slices ? \n - [0] 3D - [1] 2D \n ")

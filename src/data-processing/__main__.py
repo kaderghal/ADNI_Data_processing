@@ -6,24 +6,21 @@ import services.tools as tls
 import services.generate_sample_sets as gss
 import io_data.data_acces_file as daf
 import config.config_read as rsd
-import config.config as cfg
+import config.config_init as cfg
 import config.ColorPrompt as CP
+import services.process as prc
 import time
-
-
 
 #------------------------------------------------------------------------------------------
 # function::__main__ ::
 #------------------------------------------------------------------------------------------
 def main():
-    print('\n' + CP.bcolors.OKBLUE +'----------------------------------------------------------------------------------------------------------')
-    print('---------------------------- Preproccing dataset Alzheimer Diseases ADNI ---------------------------------')
-    print('----------------------------------------------------------------------------------------------------------\n' +  CP.bcolors.ENDC)
-
-
-
-
+    print('\n\n' + CP.fg.BLUE +'--------------------------------------------------------------------------')
+    print('------------   Preproccing dataset Alzheimer Diseases ADNI   ------------- ')
+    print('--------------------------------------------------------------------------\n' +  CP.fg.WHITE )
+   
     # Display Data Parameters
+    iprint.print_author_info()
     iprint.print_global_params()
     iprint.print_adni_datasets_path()
     iprint.print_augmentation_params()
@@ -33,35 +30,41 @@ def main():
     iprint.print_label_binary_codes()
     data_params = rsd.get_all_data_params()
     
-    # Computes des Table
-    
-
+    # compute dimensions
     HIPP_l, HIPP_r = tls.get_dimensions_cubes_HIPP(data_params)
     PPC_l, PPC_r = tls.get_dimensions_cubes_PPC(data_params)
     iprint.print_dimensions_cubes_HIPP(HIPP_l, HIPP_r )
     iprint.print_dimensions_cubes_PPC(PPC_l, PPC_r)
-    
-
+                   
     #--------------------------------------------------------------------
     # Start execution  Start Timing
     #--------------------------------------------------------------------
-    print('----------------------------------------------------------------------------------------------------------\n\n')
     start_time = time.time()
     localtime = time.localtime(time.time())
-    print(CP.bcolors.OKBLUE + "==========================================================================")
-    print('=      The dataset will be splitted to Train & Validation & Test         =')
-    print('=      Start Time : {}                                  ='.format(time.strftime('%Y-%m-%d %H:%M:%S', localtime)))
-    print("==========================================================================" + CP.bcolors.ENDC)
-    print("\n")
+    print(CP.style.BRIGHT + CP.fg.BLUE + "==========================================================================================================")
+    print('=      The dataset will be splitted to Train & Validation & Test         ')
+    print('=      Start Time : {}                                  '.format(time.strftime('%Y-%m-%d %H:%M:%S', localtime)))
+    print("==========================================================================================================\n" + CP.fg.WHITE + CP.style.RESET_ALL)
     
         
-        
-    exit_input = raw_input('\n' + CP.bcolors.WARNING + 'To change the parameters. exit and update the \"config.py\" file \nto continue press yes (Y/n) ?' + CP.bcolors.ENDC)
+    exit_input = input('\n' + CP.fg.YELLOW + 'To change the parameters. exit and update the \"config.py\" file \nto continue press yes (Y/n) ?' + CP.fg.RESET)
     exit_bool = False if str(exit_input).lower() == 'y' else True
     if exit_bool:
-        print '\n Exiting ...!  ;) \n'
+        print(CP.style.BRIGHT + CP.fg.RED + '\n Exiting ...!  ;) \n' + CP.fg.RESET + CP.style.RESET_ALL)
         sys.exit(1)
     print('\n\n')
+    
+    
+    
+    #--------------------------------------------------------------------
+    # [0] : Computes demoghraphie description Table
+    #         
+    #--------------------------------------------------------------------
+    print(CP.style.BRIGHT + CP.fg.RED + '>$ Computing of Demoghraphy description table. \n' + CP.fg.RESET + CP.style.RESET_ALL)
+    time.sleep(3)
+    data_desc = prc.compute_demography_description(data_params)
+    iprint.print_datasetDescription(data_desc)
+    
     
     #--------------------------------------------------------------------
     # [1] : save parameters from the config file to re-used it
@@ -84,14 +87,17 @@ def main():
     #--------------------------------------------------------------------
     # Execution finished  
     #--------------------------------------------------------------------
-    print(CP.bcolors.OKBLUE + "==========================================================================")
+    total_time = round((time.time() - start_time))
+    print(CP.style.BRIGHT + CP.fg.BLUE + "==========================================================================================================")
     print('=      Finished Time : {}                               '.format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
-    print('=      Execution Time : {}                                 '.format(round((time.time() - start_time))))
-    print("=========================================================================="+ CP.bcolors.ENDC)
+    print('=      Execution Time : {}s / [{}min]                                '.format(total_time, round(total_time/60, 2)))
+    print("=========================================================================================================="+ CP.fg.WHITE + CP.style.RESET_ALL)
 
-
+  
+       
+       
 #------------------------------------------------------------------------------------------
-# Start ->->->->->  
+# Start ->>>->>>  
 #------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()

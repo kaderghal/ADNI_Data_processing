@@ -47,7 +47,7 @@ class HippModel:
         self._hippLeft = value
 
     @hippMetaDataVector.setter
-    def _hippMetaDataVector(self, value):
+    def hippMetaDataVector(self, value):
         self._hippMetaDataVector = value
         
 

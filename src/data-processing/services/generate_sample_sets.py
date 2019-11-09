@@ -1,20 +1,23 @@
 #!/usr/bin/python
 
-from PIL import Image
-from models.HippModel import HippModel
-import scipy.misc
-import numpy as np
+import os
+import sys
+import time
+import math
+import config.config_read as rsd
+import config.config_init as cfg
+import config.ColorPrompt as CP
 import services.tools as tls
 import io_data.data_acces_file as daf
 import interface.inline_print as iprint
-import config.config_read as rsd
-import config.config as cfg
-import config.ColorPrompt as CP
 import services.process as prc
 import plot.plot_data as plot_data
-import time
-import math
-
+from models.HippModel import HippModel
+from PIL import Image
+from sys import getsizeof
+import scipy.misc
+import numpy as np
+import numpy.random as rnd
 
 #------------------------------------------------------------------------------------------
 # Function: generate_lists() generates and saves list of data of MRI with augmentation
@@ -27,7 +30,6 @@ def generate_lists(data_params):
     adni_out = generate_lists_from_adni_dataset(data_params)
     list_data.append(adni_out)
     daf.save_lists_to_file(path_file=file_path, data_list=list_data)
-
 
 #------------------------------------------------------------------------------------------
 # Function: split data by using class name (from txt file)
@@ -56,10 +58,8 @@ def split_classses_data(liste):
 
 def get_subjects_with_classes(data_params):
     AD, MCI, NC = split_classses_data(daf.read_data_file(str(data_params['adni_1_classes'])))
-    iprint.print_adni_desc([AD, MCI, NC])
     time.sleep(1)
     return [AD, MCI, NC]
-
 
 #------------------------------------------------------------------------------------------
 # Function: generates lists from ADNI folder dataset
@@ -84,9 +84,9 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
         valid_selected_size = {k: int(math.ceil(int(adni1_size[k]) * 20) / 100.0) for k in stage_classes} 
     
     print('\n\n')
-    print('-------------------------------------------------------------------------------------------')
-    print('------  source patients ADNI 1 (sMRI)', adni1_size)
-    print('-------------------------------------------------------------------------------------------\n')
+    print('--------------------------------------------------------------------------')
+    print('|  source patients ADNI 1', adni1_size)
+    print('--------------------------------------------------------------------------\n')
 
     train_selected_size = {k: adni1_size[k] - valid_selected_size[k] - test_selected_size[k] for k in stage_classes}    
 
@@ -101,14 +101,17 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
     print('source patients used for train:', train_selected_size)
     print('source patients used for validation:', valid_selected_size)
     print('source patients used for test', test_selected_size)
-    print('---------------------------------------------------------------------')
-    print('* [train] data will be augmented to  {} samples by each class'.format(adni_1_train_size_balanced))
-    print('* [valid] data will be augmented to  {} samples by each class'.format(adni_1_valid_size_balanced))
-    print('* [test]  data will be not augmented {} samples by each class'.format(adni_1_test_size))
-    print('---------------------------------------------------------------------\n')
+    print('\n--------------------------------------------------------------------------')
+    print('* [' + CP.fg.YELLOW + 'train'+ CP.fg.WHITE + '] data will be augmented to  {} samples by each class'.format(adni_1_train_size_balanced))
+    print('* [' + CP.fg.YELLOW + 'valid'+ CP.fg.WHITE + '] data will be augmented to  {} samples by each class'.format(adni_1_valid_size_balanced))
+    print('* [' + CP.fg.YELLOW + 'test' + CP.fg.WHITE + ']  data will be not augmented {} samples by each class'.format(adni_1_test_size))
+    print('--------------------------------------------------------------------------\n')
     
-    # print table of data augmentation
-    iprint.print_augmentation_table([adni_1_train_size_balanced, adni_1_valid_size_balanced, adni_1_test_size])
+    # print table of data augmentation    
+    iprint.print_augmentation_table([
+    [int(train_selected_size['AD']), int(train_selected_size['MCI']), int(train_selected_size['NC']),  adni_1_train_size_balanced],
+    [int(valid_selected_size['AD']), int(valid_selected_size['MCI']), int(valid_selected_size['NC']),  adni_1_valid_size_balanced],
+    [int(test_selected_size['AD']), int(test_selected_size['MCI']), int(test_selected_size['NC']),  adni_1_test_size]])
       
     adni_1_train_lists_out = []
     adni_1_valid_lists_out = []
@@ -118,11 +121,11 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
         adni_1_test_lists =  [[k, i + '/MRI/'] for i in adni_1_test[k]]
         adni_1_valid_lists = [[k, i + '/MRI/'] for i in adni_1_valid[k]]
         adni_1_train_lists = [[k, i + '/MRI/'] for i in adni_1_train[k]]
-       
+              
         adni_1_test_lists_out += tls.generate_augm_lists_v2(adni_1_test_lists, None, None, None, default_augm_params=default_augm)
         adni_1_valid_lists_out += tls.generate_augm_lists_v2(adni_1_valid_lists, adni_1_valid_size_balanced, max_blur, max_shift, default_augm_params=default_augm)
         adni_1_train_lists_out += tls.generate_augm_lists_v2(adni_1_train_lists, adni_1_train_size_balanced, max_blur, max_shift, default_augm_params=default_augm)
-   
+          
         if shuffle_data:
             rnd.shuffle(adni_1_train_lists_out)
             rnd.shuffle(adni_1_valid_lists_out)
@@ -146,9 +149,9 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
                 print(i)
             # ########################
             time.sleep(3)
-            print len(adni_1_train_lists_out)
-            print len(adni_1_valid_lists_out)
-            print len(adni_1_test_lists_out)
+            print(len(adni_1_train_lists_out))
+            print(len(adni_1_valid_lists_out))
+            print(len(adni_1_test_lists_out))
             # ########################
             time.sleep(3)
             # ########################
@@ -176,12 +179,21 @@ def generate_data_from_lists(data_params, selected_label=None):
 #------------------------------------------------------------------------------------------
 
 def generate_data_from_selected_dataset(data_params, lists_with_names, selected_label=None, create_binary_data=True):
+    
+    print(CP.style.BRIGHT + CP.fg.BLUE +"\n--------------------------------------------------------------------------")
+    print("=           creating of {} data ... ".format(data_params['3D_or_2D']))
+    print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)
+    
+    print(CP.style.BRIGHT + CP.fg.GREEN + "--------------------------------------------------------------------------")
+    print("=> $ {} ROI(s) is (are) selected ... ".format(data_params['ROI_list'][data_params['ROI_selection']]))
+    print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)
+        
     if create_binary_data:
         queue = []
         if (selected_label is None):  # create All Data
             for (lst, name) in lists_with_names:
                 bin_groups = tls.split_lists_to_binary_groups(lst)
-                for k in bin_groups:
+                for k in bin_groups:                    
                     label_code = rsd.get_label_binary_codes()[k]
                     queue.append((bin_groups[k], name + '_' + k, label_code))
             for (l, n, c) in queue:
@@ -198,46 +210,41 @@ def generate_data_from_selected_dataset(data_params, lists_with_names, selected_
                     if n == slt:
                         generate_data(data_params, l, n, c)
     else:
-        print("create 3 way Data")
+        print("create 3 way Data") # extensible for futur
 
 
 #------------------------------------------------------------------------------------------
 # generate Data (2D slices patches or 3D Volumes)
 #------------------------------------------------------------------------------------------
 def generate_data(data_params, lst, data_name, label_code):
-    print(CP.bcolors.OKBLUE +"------------------------------------------------------------------------")
-    print("--------------- creating of {} data ... ---------------------------".format(data_params['3D_or_2D']))
-    print("------------------------------------------------------------------------\n" + CP.bcolors.ENDC)
     if data_params['3D_or_2D'] == '2D':
         generate_2D_data(data_params, lst, data_name, label_code)
     else:
         generate_3D_data(data_params, lst, data_name, label_code)
-
-
-
-
 
 #######################################################################################################
 # 2D extracting process
 #######################################################################################################
 def generate_2D_data(data_params, lst, data_name, label_code):
     print("--->>  creating data for : \'{}\' - {}, size of list : {} <<--- \n".format(data_name, label_code, len(lst)))
-    process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP")
+    process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI=data_params['ROI_list'][data_params['ROI_selection']])
     print("#================================ End Creating dataset =============================================#\n\n")
 
 #######################################################################################################
 # 3D extracting process
 #######################################################################################################
 def generate_3D_data(data_params, lst, data_name, label_code):
-    print("--->>  creating data for : \'{}\' - {}, size of list : {} <<--- \n".format(data_name, label_code, len(lst)))
-    process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP")
-    print("#================================ End Creating dataset =============================================#\n\n")
+    
+    print(CP.style.BRIGHT + CP.fg.MAGENTA + "--------------------------------------------------------------------------")
+    print("> Selected Data: {} for {} - Data size : {}".format(str(data_name).split('_')[3].capitalize(), str(data_name).split('_')[4], len(lst)))
+    print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)    
+    process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI=data_params['ROI_list'][data_params['ROI_selection']])
 
 
 #------------------------------------------------------------------------------------------
 # 2D extracting for pytorch
 #------------------------------------------------------------------------------------------
-def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP"):
+def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI):
     
 
     list_sagittal_data = []
@@ -277,26 +284,17 @@ def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_R
 
 
     print("#================================ End Creating 3D data  ===========================================#\n\n")
-        
-
+     
 #------------------------------------------------------------------------------------------
 # 3D extracting for pytorch
 #------------------------------------------------------------------------------------------
-def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI="HIPP"): 
+def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI): 
     
     if("HIPP" in indice_ROI):
         l, r = tls.get_dimensions_cubes_HIPP(data_params)
     else:
         l, r = tls.get_dimensions_cubes_PPC(data_params)
-
-    print(CP.bcolors.OKGREEN + "\t-----------------------------------------------------")
-    print("\t---------------   {} is selected ...  -------------".format(indice_ROI))
-    print("\t-----------------------------------------------------\n" + CP.bcolors.ENDC)
-        
-    list_sagittal_data = []
-    list_axial_data = []
-    list_coronal_data = []
-    
+   
     # get dimensions from the selected ROI (max - min)
     names = ['sag', 'cor', 'axi']
     list_cord_l = [int(l[i+1] - l[i]) for i in range(0, 6, 2)]
@@ -307,84 +305,66 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     sag_l, cor_l, axi_l = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "l_" + str(names[j]) : list_cord_l[j] for j in range(len(list_cord_l))}.values()]
     sag_r, cor_r, axi_r = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "r_" + str(names[j]) : list_cord_r[j] for j in range(len(list_cord_r))}.values()]
 
-
     data_selection = str(str(data_name).split('_')[1]).upper() + '_' + str(str(data_name).split('_')[2]).upper()
     data_set = str(data_name).split('_')[3]
     binary_label = str(data_name).split('_')[4]
     target_path = data_params['adni_data_des'] + tls.get_convention_name(data_params) + '/' +indice_ROI + "/3D/"
-    
-    print(target_path + '\n')
-    
-    data_holder = []
+        
     data_size = 0
     key = 0
-    for input_line in lst:
-        
+    for input_line in lst:        
         # Mean ROI (L & R)
-        # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
+        data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
         
-        # Left and Right ROI 
-        data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
+        # # # Left and Right ROI 
+        # data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
         
-        # Fliped Felt & Right ROI       
-        data_roi_left_flip = prc.flip_3d(data_roi_left)
-        data_roi_right_flip = prc.flip_3d(data_roi_right)
+        # # # # # Fliped Felt & Right ROI       
+        # # data_roi_left_flip = prc.flip_3d(data_roi_left)
+        # # data_roi_right_flip = prc.flip_3d(data_roi_right)
+        
+        
+        # # # check flip operation
+        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [[0,3], [0,3], [0,3]], [[0,3], [0,3], [0,3]])
+        
         
                 
-        # [ID, Date, Class, Age, Sex, MMSE]
-        subject_ID = str(input_line[1]).split('/')[7] 
-        meta_data = tls.get_meta_data_xml(data_params, subject_ID)
-        # print(meta_data, binary_label, data_set, label_code[input_line[0]])
+        # # # [ID, Date, Class, Age, Sex, MMSE]
+        # subject_ID = str(input_line[1]).split('/')[7] 
+        # meta_data = tls.get_meta_data_xml(data_params, subject_ID)
+        # # print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
-        # create the model for Dataloader (pytorch)
-        model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))
-        # # from sys import getsizeof
-        # # data_size += getsizeof(model)
-        # # print("size of : {}".format(getsizeof(model)))        
+        # # create the model for Dataloader (pytorch)
+        # model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))       
+        # data_size += getsizeof(model)
+              
         
        
-        model_abs_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name + '_' + subject_ID + '.pkl'
+        # model_abs_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + '].pkl'
 
 
-        # # store data model
+        # store data model
 
-        daf.save_model(model, model_abs_path)
-        print("Done: {}".format(model_abs_path))
-
-        # # # Model
-        # print("Model :{} - {} - {}".format(model.hippLeft.shape, model.hippMetaDataVector, model.hippLabel))
+        # daf.save_model(model, model_abs_path)
+        # print("Done: {}".format(model_abs_path))
 
 
-
-
-        # # print '{}. Hippocampus Roi {} , "{}" , Class : {}'.format(key, data_roi_mean.shape, data_name, label_code[input_line[0]])
-
-        # # print("augmentation ", input_line[2])
-        # #plot Data
-        # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
-
-
-        # plot_data.plot_ROI_all(data_roi_right, data_roi_left_flip, slc_index_begin, slc_index_end)
-    
-        # plot_data.plot_ROI_all(data_roi_left, data_roi_right, slc_index_begin, slc_index_end)
-        # plot_data.plot_ROI_all(data_roi_left_flip, data_roi_right_flip, slc_index_begin, slc_index_end)
-        
-        # plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
-        # plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
-        # plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
-
-
-
-
-
+        # # #plot Data
+        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
+        # # plot_data.plot_ROI_all(data_roi_right, data_roi_left_flip, slc_index_begin, slc_index_end)    
+        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right, slc_index_begin, slc_index_end)
+        # # plot_data.plot_ROI_all(data_roi_left_flip, data_roi_right_flip, slc_index_begin, slc_index_end)
+        # # plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
+        # # plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
+        # # plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
 
         key += 1
         
-    print("\n#================================ End Creating 3D data  ===========================================#\n\n")
+        # Progress of computation       
+        print(CP.bg.RED + CP.style.BRIGHT + " {} % percent complete of 100% ".format(round(key/len(lst)*100, 2)) + " " + CP.style.RESET_ALL + CP.bg.RESET, end='\r')
+        
+        
+    # print("\n#================================ End Creating 3D data  ===========================================#\n\n")
 
-    # save array to file
-
-    print("Path :", target_path + binary_label + '/' + str(data_set) + '/')
-    print("Total size: {}".format(data_size))
-
-
+    print("\n", end='\r')
+    print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb\n".format(data_size/1024)+ CP.style.RESET_ALL)  

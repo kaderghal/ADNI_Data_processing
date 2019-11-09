@@ -138,7 +138,25 @@ def process_cube_PPC(list_item, data_params):
 
 
 # ########## compute desctable
-# def compute_demography_description(data_params):
-#     # from text file
-#     AD, MCI, NC = gss.split_classses_data(daf.read_data_file(str(data_params['adni_1_classes'])))
-#     print("AD {} - MCI {} - NC {}".format(len(AD), len(MCI), len(NC)))
+
+def computeScores(liste):    
+    age = np.asanyarray([float(liste[i].age) for i in range(len(liste))], dtype=np.float32) 
+    sex = [str(liste[i].sex) for i in range(len(liste))] 
+    mmse = np.asanyarray([float(liste[i].mmse) for i in range(len(liste))], dtype=np.float32) 
+    femaleNumber = ['F' for i in sex if 'F' in str(i)]
+    sexRedEX = str(len(femaleNumber)) + '/' + str(len(sex) - len(femaleNumber))
+    ageRegEX = '[' + str(round(np.min(age), 2)) + ', ' + str(round(np.max(age) ,2)) + ']/' + str(round(np.mean(age), 2)) + '(' + str(round(np.std(age), 2)) + ')'
+    mmseRegEX = '[' + str(round(np.min(mmse), 2)) + ', ' + str(round(np.max(mmse) ,2)) + ']/' + str(round(np.mean(mmse), 2)) + '(' + str(round(np.std(mmse), 2)) + ')'
+    return [len(liste), sexRedEX, ageRegEX, mmseRegEX]
+    
+
+def compute_demography_description(data_params):
+    import services.generate_sample_sets as gss
+    AD, MCI, NC = gss.get_subjects_with_classes(data_params)   
+    AD_list = [tls.getSubjectByID(data_params, str(i)) for i in AD]
+    MCI_list = [tls.getSubjectByID(data_params, str(i)) for i in MCI]
+    NC_list = [tls.getSubjectByID(data_params, str(i)) for i in NC]
+    return [['AD']+ computeScores(AD_list), ['MCI'] + computeScores(MCI_list), ['NC'] + computeScores(NC_list)]
+    
+
+        

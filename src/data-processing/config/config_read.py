@@ -1,4 +1,4 @@
-import config as cfg
+import config.config_init as cfg
 
 #------------------------------------------------------------------------------------------
 # Config read: read data from config file to dict structure
@@ -37,6 +37,8 @@ def get_classes_datasets():
 
 def get_roi_params_global():
     tempo_dict = {}
+    tempo_dict['ROI_selection'] = int(cfg.ROI_PARAMS_GLOBAL['ROI_selection'])    
+    tempo_dict['ROI_list'] = cfg.ROI_PARAMS_GLOBAL['ROI_list']     
     tempo_dict['3D_or_2D'] = cfg.ROI_PARAMS_GLOBAL['3D_or_2D']
     tempo_dict['padding_size'] = int(cfg.ROI_PARAMS_GLOBAL['padding_size'])
     tempo_dict['neighbors'] = int(cfg.ROI_PARAMS_GLOBAL['neighbors'])    
@@ -59,6 +61,7 @@ def get_augmentation_params():
     tempo_dict['shift'] = cfg.AUGMENTATION_PARAMS['shift']
     tempo_dict['sigma'] = cfg.AUGMENTATION_PARAMS['sigma']
     tempo_dict['factor'] = cfg.AUGMENTATION_PARAMS['factor']
+    tempo_dict['flip'] = cfg.AUGMENTATION_PARAMS['flip']
     return tempo_dict
 
 def get_split_params():

@@ -2,6 +2,7 @@
 
 import config.config_read as rsd
 import io_data.xml_acces_file as xaf
+from models.Subject import Subject
 import os
 import errno
 import numpy as np
@@ -82,20 +83,23 @@ def generate_selected_label_list(label):  # ('NC-AD', '')
 # Function: split binary classification groups
 #------------------------------------------------------------------------------------------
 def split_lists_to_binary_groups(lists):
-    three_way_labels = list(rsd.get_label_binary_codes()['AD-MCI-NC'].keys())  # {'AD': 0, 'MCI': 1, 'NC': 2}
-    bin_labels = {'10': three_way_labels[1] + '-' + three_way_labels[0], '12': three_way_labels[1] + '-' + three_way_labels[2], '20': three_way_labels[2] + '-' + three_way_labels[0]}
-    bin_groups = {'10': [], '12': [], '20': []}
+    three_way_labels = list(rsd.get_label_binary_codes()['AD-MCI-NC'].keys())  # {'AD': 0, 'MCI': 1, 'NC': 2}    
+    # bin_labels = {'10': three_way_labels[1] + '-' + three_way_labels[0], '12': three_way_labels[1] + '-' + three_way_labels[2], '20': three_way_labels[2] + '-' + three_way_labels[0]}
+    bin_labels = {'01': three_way_labels[0] + '-' + three_way_labels[1], '12': three_way_labels[1] + '-' + three_way_labels[2], '02': three_way_labels[0] + '-' + three_way_labels[2]}
+    bin_groups = {'01': [], '12': [], '02': []}
+    
     for item in lists:
         if item[0] == three_way_labels[0]:
-            bin_groups['10'].append(item)
-            bin_groups['20'].append(item)
+            bin_groups['01'].append(item)
+            bin_groups['02'].append(item)
         if item[0] == three_way_labels[1]:
-            bin_groups['10'].append(item)
+            bin_groups['01'].append(item)
             bin_groups['12'].append(item)
         if item[0] == three_way_labels[2]:
             bin_groups['12'].append(item)
-            bin_groups['20'].append(item)
-    return {bin_labels[k]: bin_groups[k] for k in ('10', '12', '20')}
+            bin_groups['02'].append(item)
+    return {bin_labels[k]: bin_groups[k] for k in ('01', '12', '02')}
+
 
 ## 
 def split_mri_dti(item_list):
@@ -117,7 +121,7 @@ def get_dimensions_patch(data):
 
 #------------------------------------------------------------------------------------------
 # generates Augmentation parameters (not randomly) to avoid same params
-# -> versionn 1: overfitting !!!! 
+# -> version 1: overfitting !!!! 
 #------------------------------------------------------------------------------------------
 
 def generate_augm_params(max_blur, max_shift):
@@ -161,7 +165,6 @@ def generate_augm_lists(dirs_with_labels, new_size, max_blur, max_shift, default
     
     # for avoid similar augmentation  
     local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
-    print(len(local_param_list))
     shuffle(local_param_list)
     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))    
     res = []
@@ -186,48 +189,36 @@ def generate_augm_lists(dirs_with_labels, new_size, max_blur, max_shift, default
 
 
 
-
+#------------------------------------------------------------------------------------------
+# generate list dataset with aumentation parameters 
+# EXP: ['AD', 'path/to/MRI/', (x,y,z, a.b)] for each subject
+#------------------------------------------------------------------------------------------
 
 def generate_augm_lists_v2(dirs_with_labels, new_size, max_blur, max_shift, default_augm_params=None):
-    print(len(dirs_with_labels), new_size)
     # pas d'augmentation
     if new_size is None or len(dirs_with_labels) == new_size or max_blur == 0 or max_shift == 0:  # ?
         return [dwl + [default_augm_params] for dwl in dirs_with_labels]
 
     augm_coeff = int(math.floor(new_size / len(dirs_with_labels)))
     res = []
-    i, j = 0, 0
     local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
     shuffle(local_param_list)
-        
+            
     for dwl in dirs_with_labels:
         res.append(dwl + [(0, 0, 0, 0.0)])
-
-        i += 1
-        j += 1
         for _ in range(augm_coeff - 1):
             res.append(dwl + local_param_list.pop())
-            i += 1
-            j += 1
+   
+        local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
+        shuffle(local_param_list)
 
-        j = 0
 
-    local_param_list = generate_augmentation_parameters_list_v2(max_blur, max_shift)
-    shuffle(local_param_list)
-
-    for x in range(new_size - len(dirs_with_labels) * augm_coeff):
+    for _ in range(new_size - len(dirs_with_labels) * augm_coeff):
         ridx = rnd.randint(len(dirs_with_labels))
         dwl = dirs_with_labels[ridx] 
         res.append(dwl + local_param_list.pop())
-        i += 1
-        j += 1
-         
+     
     return res
-
-
-
-
-
 
 
 def get_dimensions_cubes_HIPP(data):
@@ -265,11 +256,12 @@ def get_dimensions_cubes_PPC(data):
                  int(crp_r[4]) - 1 - shift_param - padding_size, int(crp_r[5]) - 1 - shift_param + padding_size)
     return new_crp_l, new_crp_r
 
-
-
-
-
-
-
+#
 def split_list(liste, number_ele):
     return liste[:number_ele], liste[number_ele:]
+
+
+
+def getSubjectByID(data_params, subjectID):        
+    subjectEle = xaf.get_Subject_info(data_params, subjectID) #[ID, Date, Class, Age, Sex, MMSE] 
+    return Subject(*subjectEle)
