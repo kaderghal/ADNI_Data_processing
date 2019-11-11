@@ -32,9 +32,23 @@ def get_convention_name(data_params):
 # Function comptues the rotation operation
 #------------------------------------------------------------------------------------------
 def matrix_rotation(mtx):
-    transpose = np.transpose(np.transpose(mtx))
-    rotated = list(reversed(zip(*transpose)))
+    transpose = np.transpose(np.transpose(mtx)) 
+    # rotated = list(reversed(zip(*transpose))) # for python 2
+    rotated = list(zip(*transpose))[::-1] # for python 3
     return rotated
+
+
+#------------------------------------------------------------------------------------------
+# Function comptues the rotation operation for 3D volume
+#------------------------------------------------------------------------------------------
+def volume_rotation(data):
+    data_holder = np.zeros((data.shape[0], data.shape[1], data.shape[2]))   
+    for i in range(data.shape[0]): # sag dimension
+        data_holder[i, :, :] = list(zip(*np.transpose(np.transpose(data[i, :, :]))))[::-1]
+    
+    return data_holder
+     
+
 
 #------------------------------------------------------------------------------------------
 # Function create folder if not exits 

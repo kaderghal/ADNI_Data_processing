@@ -12,12 +12,14 @@ import io_data.data_acces_file as daf
 import interface.inline_print as iprint
 import services.process as prc
 import plot.plot_data as plot_data
+import plot.plot_3D_ROI as plot_3D_data
 from models.HippModel import HippModel
 from PIL import Image
 from sys import getsizeof
 import scipy.misc
 import numpy as np
 import numpy.random as rnd
+import matplotlib.pyplot as plt 
 
 #------------------------------------------------------------------------------------------
 # Function: generate_lists() generates and saves list of data of MRI with augmentation
@@ -180,12 +182,8 @@ def generate_data_from_lists(data_params, selected_label=None):
 
 def generate_data_from_selected_dataset(data_params, lists_with_names, selected_label=None, create_binary_data=True):
     
-    print(CP.style.BRIGHT + CP.fg.BLUE +"\n--------------------------------------------------------------------------")
-    print("=           creating of {} data ... ".format(data_params['3D_or_2D']))
-    print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)
-    
-    print(CP.style.BRIGHT + CP.fg.GREEN + "--------------------------------------------------------------------------")
-    print("=> $ {} ROI(s) is (are) selected ... ".format(data_params['ROI_list'][data_params['ROI_selection']]))
+    print(CP.style.BRIGHT + CP.fg.GREEN + "\n--------------------------------------------------------------------------")
+    print(" $ [{} - {} ROI(s)] is selected ... ".format(data_params['3D_or_2D'] , data_params['ROI_list'][data_params['ROI_selection']]))
     print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)
         
     if create_binary_data:
@@ -226,9 +224,10 @@ def generate_data(data_params, lst, data_name, label_code):
 # 2D extracting process
 #######################################################################################################
 def generate_2D_data(data_params, lst, data_name, label_code):
-    print("--->>  creating data for : \'{}\' - {}, size of list : {} <<--- \n".format(data_name, label_code, len(lst)))
+    print(CP.style.BRIGHT + CP.fg.MAGENTA + "--------------------------------------------------------------------------")
+    print("> Selected Data: {} for {} - Data size : {}".format(str(data_name).split('_')[3].capitalize(), str(data_name).split('_')[4], len(lst)))
+    print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)    
     process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI=data_params['ROI_list'][data_params['ROI_selection']])
-    print("#================================ End Creating dataset =============================================#\n\n")
 
 #######################################################################################################
 # 3D extracting process
@@ -236,64 +235,30 @@ def generate_2D_data(data_params, lst, data_name, label_code):
 def generate_3D_data(data_params, lst, data_name, label_code):
     
     print(CP.style.BRIGHT + CP.fg.MAGENTA + "--------------------------------------------------------------------------")
-    print("> Selected Data: {} for {} - Data size : {}".format(str(data_name).split('_')[3].capitalize(), str(data_name).split('_')[4], len(lst)))
+    print(">  {} Data for [{}] & Data length: [{}]".format(str(data_name).split('_')[3].capitalize(), str(data_name).split('_')[4], len(lst)))
     print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)    
     process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI=data_params['ROI_list'][data_params['ROI_selection']])
 
 
 #------------------------------------------------------------------------------------------
-# 2D extracting for pytorch
+# 2D extracting 
 #------------------------------------------------------------------------------------------
 def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_ROI):
-    
-
-    list_sagittal_data = []
-    list_axial_data = []
-    list_coronal_data = []
-    
-    if("HIPP" in indice_ROI):
-        l, r = tls.get_dimensions_cubes_HIPP(data_params)
-    else:
-        l, r = tls.get_dimensions_cubes_PPC(data_params)
-        
-
-    l_sag = int(l[1] - l[0])
-    l_cor = int(l[3] - l[2])
-    l_axi = int(l[5] - l[4])
-    r_sag = int(r[1] - r[0])
-    r_cor = int(r[3] - r[2])
-    r_axi = int(r[5] - r[4])
-
-    slc_index_begin = ((l_sag / 2) - 1)
-    slc_index_end = ((l_sag / 2) + 2)
-
-    data_selection = str(str(data_name).split('_')[1]).upper() + '_' + str(str(data_name).split('_')[2]).upper()
-    lmdb_set = str(data_name).split('_')[3]
-    binary_label = str(data_name).split('_')[4]
-    projections_name = ['sagittal', 'coronal', 'axial']
-    target_path = data_params['adni_data_des'] + tls.get_convention_name(data_params)
-    
-
-
-    destination_data_sag = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[0]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    label_text_file_sag = destination_data_sag + lmdb_set + '_lmdb.txt'
-    destination_data_cor = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[1]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    label_text_file_cor = destination_data_cor + lmdb_set + '_lmdb.txt'
-    destination_data_axi = target_path + '/' + data_selection + '/' + modality + '/' + str(projections_name[2]) + '/' + binary_label + '/lmdb/' + lmdb_set + '/'
-    label_text_file_axi = destination_data_axi + lmdb_set + '_lmdb.txt'
-
-
-    print("#================================ End Creating 3D data  ===========================================#\n\n")
+    # To do 
+    pass
      
 #------------------------------------------------------------------------------------------
-# 3D extracting for pytorch
+# 3D extracting 
 #------------------------------------------------------------------------------------------
 def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI): 
     
     if("HIPP" in indice_ROI):
-        l, r = tls.get_dimensions_cubes_HIPP(data_params)
+        l, r = tls.get_dimensions_cubes_HIPP(data_params) # exctract only Hippocampus ROI
+    elif ("PPC" in indice_ROI):
+        l, r = tls.get_dimensions_cubes_PPC(data_params) # exctract only Posterior PC ROI
     else:
-        l, r = tls.get_dimensions_cubes_PPC(data_params)
+        # compute both ROIs (in futur)
+        pass
    
     # get dimensions from the selected ROI (max - min)
     names = ['sag', 'cor', 'axi']
@@ -301,9 +266,9 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     list_cord_r = [int(r[i+1] - r[i]) for i in range(0, 6, 2)]
 
     # compute the indexes for selected slices
-    neighbors = int(data_params['neighbors'])
-    sag_l, cor_l, axi_l = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "l_" + str(names[j]) : list_cord_l[j] for j in range(len(list_cord_l))}.values()]
-    sag_r, cor_r, axi_r = [[(int(i)/2)-neighbors, (int(i)/2)+ neighbors + 1] for i in { "r_" + str(names[j]) : list_cord_r[j] for j in range(len(list_cord_r))}.values()]
+    neighbors = int(data_params['neighbors']) # used for how many of slices we will select  
+    sag_l, cor_l, axi_l = [[(int(i/2) - neighbors), (int(i/2)+ neighbors + 1)] for i in { "l_" + str(names[j]) : list_cord_l[j] for j in range(len(list_cord_l))}.values()]
+    sag_r, cor_r, axi_r = [[(int(i/2) - neighbors), (int(i/2)+ neighbors + 1)] for i in { "r_" + str(names[j]) : list_cord_r[j] for j in range(len(list_cord_r))}.values()]
 
     data_selection = str(str(data_name).split('_')[1]).upper() + '_' + str(str(data_name).split('_')[2]).upper()
     data_set = str(data_name).split('_')[3]
@@ -314,49 +279,40 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     key = 0
     for input_line in lst:        
         # Mean ROI (L & R)
-        data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
+        # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
         
-        # # # Left and Right ROI 
-        # data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
+        # cross mean between cubes
         
-        # # # # # Fliped Felt & Right ROI       
-        # # data_roi_left_flip = prc.flip_3d(data_roi_left)
-        # # data_roi_right_flip = prc.flip_3d(data_roi_right)
-        
-        
-        # # # check flip operation
-        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [[0,3], [0,3], [0,3]], [[0,3], [0,3], [0,3]])
-        
-        
-                
-        # # # [ID, Date, Class, Age, Sex, MMSE]
-        # subject_ID = str(input_line[1]).split('/')[7] 
-        # meta_data = tls.get_meta_data_xml(data_params, subject_ID)
-        # # print(meta_data, binary_label, data_set, label_code[input_line[0]])
+        # return computed cubes ROIs Left and Right 
+        data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
+                        
+        # Fliped Felt & Right ROI       
+        data_roi_left_flip = prc.flip_3d(data_roi_left)
+        data_roi_right_flip = prc.flip_3d(data_roi_right)
+                   
+        # [ID, Date, Class, Age, Sex, MMSE]
+        subject_ID = str(input_line[1]).split('/')[7] 
+        meta_data = tls.get_meta_data_xml(data_params, subject_ID)
+        # print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
-        # # create the model for Dataloader (pytorch)
-        # model = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))       
-        # data_size += getsizeof(model)
-              
-        
+        # create the model for Dataloader (pytorch)
+        model_object_normal = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))       
+        data_size += getsizeof(model_object_normal)
+             
+        #cross fliped model      
+        model_object_fliped = HippModel(data_roi_right_flip, data_roi_left_flip, meta_data, int(label_code[input_line[0]]))       
+        data_size += getsizeof(model_object_fliped)
        
-        # model_abs_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + '].pkl'
-
+        model_abs_normal_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_normal') + '.pkl'
+        model_abs_fliped_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_fliped') + '.pkl'
 
         # store data model
+        daf.save_model(model_object_normal, model_abs_normal_path)
+        daf.save_model(model_object_fliped, model_abs_fliped_path)
+        # print("Done: {}".format(model_abs_normal_path))
+        # print("Done: {}".format(model_abs_fliped_path))
 
-        # daf.save_model(model, model_abs_path)
-        # print("Done: {}".format(model_abs_path))
-
-
-        # # #plot Data
-        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right_flip, [sag_l, cor_l, axi_l], [sag_r, cor_r, axi_r])
-        # # plot_data.plot_ROI_all(data_roi_right, data_roi_left_flip, slc_index_begin, slc_index_end)    
-        # # plot_data.plot_ROI_all(data_roi_left, data_roi_right, slc_index_begin, slc_index_end)
-        # # plot_data.plot_ROI_all(data_roi_left_flip, data_roi_right_flip, slc_index_begin, slc_index_end)
-        # # plot_data.plot_HIPP(data_roi_left, 0, slc_index_begin, slc_index_end)
-        # # plot_data.plot_HIPP(data_roi_left, 1, slc_index_begin, slc_index_end)
-        # # plot_data.plot_HIPP(data_roi_left, 2, slc_index_begin, slc_index_end)
+        # plot Data
 
         key += 1
         

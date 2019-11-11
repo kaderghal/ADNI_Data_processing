@@ -1,37 +1,32 @@
+import nibabel as nib
+import matplotlib.pyplot as plt
+import numpy as np
 
 
-AUTHOR_INFO = {
-    'name': 'Alz_ADNI_process',
-    'version': '1.2',
-    'year': '2019',
-    'description': 'Extracting data for CNN Alzheimer\'s Disease Classification',
-    'url': 'http://github.com/kaderghal',
-    'author': 'Karim ADERGHAL',
-    'email': 'aderghal.karim@gmail.com',
-    'university': 'Bordeaux',
-    'lab': 'LaBRI'
-}
-
-def get_author_info():
-    tempo_dict = {}
-    tempo_dict['name'] = str(AUTHOR_INFO['name'])
-    tempo_dict['version'] = str(AUTHOR_INFO['version'])
-    tempo_dict['year'] = str(AUTHOR_INFO['year'])
-    tempo_dict['description'] = str(AUTHOR_INFO['description'])
-    tempo_dict['url'] = str(AUTHOR_INFO['url'])
-    tempo_dict['author'] = str(AUTHOR_INFO['author'])
-    tempo_dict['email'] = str(AUTHOR_INFO['email'])
-    tempo_dict['lab'] = str(AUTHOR_INFO['lab'])
-    return tempo_dict
+def show_slices(slices):
+    """ Function to display row of image slices """
+    fig, axes = plt.subplots(1, len(slices))
+    for i, slice in enumerate(slices):
+        axes[i].imshow(slice.T, cmap="gray", origin="lower")
 
 
 
-def print_author_info():
-    print("Author Information :\n")
-    for k, v in get_author_info().items():
-        print('\t[' + k + ']: ' + v)
-    print ("\n")
-    
-    
-# print("A: ", get_author_info().items())
-print_author_info()
+
+
+img = nib.load('mri.nii')
+img_data = img.get_fdata()
+print(img_data.shape)
+
+img_data = np.nan_to_num(img_data)
+
+slice_0 = img_data[43, :, :]
+slice_1 = img_data[:, 71, :]
+slice_2 = img_data[:, :, 44]
+
+
+show_slices([slice_0, slice_1, slice_2])
+plt.suptitle("Center slices for MRI image")  
+plt.show()
+
+
+

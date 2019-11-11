@@ -106,7 +106,7 @@ def print_adni_desc(adni1):
 
 def print_augmentation_table(data):
     print(CP.style.BRIGHT + CP.fg.RED + "--------------------------------------------------------------------------")
-    print("|                               Augmentation DESC                        ")
+    print("|                        Augmentation description                         ")
     print("--------------------------------------------------------------------------")
     print("|         |        AD         |         MCI         |         NC          ")
     print("--------------------------------------------------------------------------")
@@ -121,9 +121,9 @@ def print_augmentation_table(data):
 def print_datasetDescription(data):
     
     print(CP.style.BRIGHT + CP.fg.CYAN + "----------------------------------------------------------------------------------------------------------")
-    print("|                                      ADNI-1 DESC                                                       |")
+    print("|                                      ADNI-1 description                                                |")
     print("----------------------------------------------------------------------------------------------------------")
-    print("|        #Subject   |   Sex (F/M)       |    Age [min, max]/mean(std)   |    MMSE [min, max]/std         |")
+    print("|        #Subject   |   Sex (F/M)       |    Age [min, max]/mean(std)   |    MMSE [min, max]mean/std     |")
     print("----------------------------------------------------------------------------------------------------------")
     print("| AD  |     {}     |     {}         |  {}   |    {}    |".format(data[0][1], data[0][2], data[0][3], data[0][4]))
     print("----------------------------------------------------------------------------------------------------------")

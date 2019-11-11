@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # ====================================================
 # Author: Karim ADERGHAL 
 # Year: 2019
 # Labs: LaBRI & LabSIV
-# for ADNI Dataset : ADNI-1 baseline SMRI 
+# for ADNI Dataset : ADNI-1 baseline SMRI
+# screening selected dataset
+# URL: http://adni.loni.usc.edu/ 
 # ====================================================
 
 
@@ -15,18 +17,18 @@ DEBUG = False
 TIMEZONE = 'France/Bordeaux'
 
 #------------------------------------------------------------------------------------------
-# Author Information 
+# Author Informations 
 #------------------------------------------------------------------------------------------
 AUTHOR_INFO = {
-    'name': 'Alz_ADNI_process',
+    'author': 'Karim ADERGHAL',
+    'name': 'ALZ-ADNI PCS',
     'version': '1.2',
     'year': '2019',
-    'description': 'Extracting data for CNN Alzheimer\'s Disease Classification',
-    'url': 'http://github.com/kaderghal',
-    'author': 'Karim ADERGHAL',
+    'description': 'Data Extracting scripts for CNN Alzheimer\'s Disease Classification',
+    'url': 'http://github.com/kaderghal',    
     'email': 'aderghal.karim@gmail.com',
-    'university': 'Bordeaux',
-    'lab': 'LaBRI'
+    'university': 'Université de Bordeaux (Bordeaux)/ University IBN Zohr (Agadir)',
+    'lab': 'LaBRI & LabSIV'
 }
 
 #------------------------------------------------------------------------------------------
@@ -81,6 +83,7 @@ ROI_PARAMS_GLOBAL = {
     '3D_or_2D': '3D', # extract data   
     'padding_size': 0,  # =>  28 + (x*2)  
     'neighbors': 1, # number of neighbors of the median slice if 2D is selected
+    'brain_dims': [121, 145, 121] # full brain dimensions (x, y, z)
 }
 
 ROI_PARAMS_HIPP = {

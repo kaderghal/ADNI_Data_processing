@@ -118,4 +118,24 @@ def read_model(path_file):
     return model
 
 
-
+#------------------------------------------------------------------------------------------
+# Save Desciption Demography outpu data to txt file
+#------------------------------------------------------------------------------------------
+def save_desc_table(data_params, text_data):
+    classes = ['AD ', 'MCI', 'NC ']         
+    path_file = data_params['adni_data_des'] + tls.get_convention_name(data_params) + '/Desciption_ADNI_demography.txt'
+    try:
+        os.makedirs(os.path.dirname(path_file))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    with open(path_file, 'w') as f:
+        f.write("----------------------------------------------------------------------------------------------------------\n")
+        f.write("|                                      ADNI-1 description                                                |\n")
+        f.write("----------------------------------------------------------------------------------------------------------\n")
+        f.write("|        #Subject   |   Sex (F/M)       |    Age [min, max]/mean(std)   |    MMSE [min, max]mean/std     |\n")
+        f.write("----------------------------------------------------------------------------------------------------------\n")
+        for i in range(3):
+            f.write("|  {}  |     {}     |     {}         |  {}   |    {}    |\n".format(classes[i], text_data[i][1], text_data[i][2], text_data[i][3], text_data[i][4]))      
+        f.write("----------------------------------------------------------------------------------------------------------\n")
+    f.close()
