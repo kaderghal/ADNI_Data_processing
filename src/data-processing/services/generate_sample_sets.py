@@ -303,9 +303,10 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         model_object_fliped = HippModel(data_roi_right_flip, data_roi_left_flip, meta_data, int(label_code[input_line[0]]))       
         data_size += getsizeof(model_object_fliped)
        
-        model_abs_normal_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_normal') + '.pkl'
-        model_abs_fliped_path = target_path + binary_label + '/' + str(data_set) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_fliped') + '.pkl'
+        model_abs_normal_path = target_path + binary_label + '/' + str(data_set) + '/' + str(input_line[0]) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_normal') + '.pkl'
+        model_abs_fliped_path = target_path + binary_label + '/' + str(data_set) + '/' + str(input_line[0]) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_fliped') + '.pkl'
 
+        
         # store data model
         daf.save_model(model_object_normal, model_abs_normal_path)
         daf.save_model(model_object_fliped, model_abs_fliped_path)
@@ -323,4 +324,4 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     # print("\n#================================ End Creating 3D data  ===========================================#\n\n")
 
     print("\n", end='\r')
-    print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb\n".format(data_size/1024)+ CP.style.RESET_ALL)  
+    print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb\n".format(data_size/1024) + CP.style.RESET_ALL)  

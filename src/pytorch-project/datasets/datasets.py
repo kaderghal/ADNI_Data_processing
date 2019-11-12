@@ -1,27 +1,36 @@
+
 import numpy as np
-from PIL import Image
 import pickle
 import os
 import os.path
 import sys
 
+from PIL import Image
 
+import torch
+import torchvision
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.sampler import BatchSampler
 from torchvision.datasets import DatasetFolder
+from torchvision import transforms
 
-# 1 loader (load one sample)
+# for pickle load
+sys.path.append('/home/karim/workspace/vscode/ADNI_Data_processing/src/data-processing/')
+root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F1_MS2_MB10D/HIPP/3D/AD-NC/'
 
+ADNI_MODEL_EXTENSIONS = ('.pkl')
+
+
+
+# 1  pickle loader (load one sample)
 def pickle_loader(path_file):    
     dir_name = os.path.dirname(path_file)
     with open(path_file, 'rb') as f:
         model_adni = pickle.load(f)
     return model_adni
 
-
-ADNI_MODEL_EXTENSIONS = ('.pkl')
-
+# to check if the file type is allowed 
 def has_file_allowed_extension(filename, extensions):
     return filename.lower().endswith(extensions)
 
@@ -29,7 +38,7 @@ def has_file_allowed_extension(filename, extensions):
 def is_image_file(filename):
     return has_file_allowed_extension(filename, ADNI_MODEL_EXTENSIONS)
 
-   
+# function 
 def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
     images = []
     dir = os.path.expanduser(dir)
@@ -52,17 +61,13 @@ def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
     return images
 
 
-
 # 2 Class Datafolder
-
-class ADNIFolder(DatasetFolder):   
-
+class Dataset_ADNI_Folder(DatasetFolder):  
 
     # Methodes
     def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None):
 
-        # super(DatasetFolder, self).__init__(root, transform=transform, target_transform=target_transform)
-
+        self.root = root
         classes, class_to_idx = self._find_classes(self.root)
         samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file)
         
@@ -75,26 +80,27 @@ class ADNIFolder(DatasetFolder):
         self.classes = classes
         self.class_to_idx = class_to_idx
         self.samples = samples
+        self.transform = transforms.Compose([transforms.ToTensor()])
         self.targets = [s[1] for s in samples]
     
     # __getitem__
     def __getitem__(self, index):
         path, target = self.samples[index]
         sample = self.loader(path)
-        if self.transform is not None:
-            sample = self.transform(sample)
-        if self.target_transform is not None:
-            target = self.target_transform(target)
+        # if self.transform is not None:
+        #     sample = self.transform(sample)
+        # if self.target_transform is not None:
+        #     target = self.target_transform(target)
 
-        return sample, target
+        # sample is objet instance from HippModel (L, R, V, Label)
+        return (sample.hippLeft, sample.hippRight, sample.hippMetaDataVector, target) 
+   
     # __len__
     def __len__(self):
         return len(self.samples)
-    
-    
+        
     # _find_classes
     def _find_classes(self, dir):
-
         if sys.version_info >= (3, 5):
             # Faster and available in Python 3.5 and above
             classes = [d.name for d in os.scandir(dir) if d.is_dir()]
@@ -107,40 +113,31 @@ class ADNIFolder(DatasetFolder):
     
     
     
- 
-# 3 dataloader
-
-train_data= torchvision.datasets.DatasetFolder(root='.', loader=pickle_loader, extensions='.pickle', transform=transform)
-valid_data= torchvision.datasets.DatasetFolder(root='.', loader=pickle_loader, extensions='.pickle', transform=transform)
-test_data= torchvision.datasets.DatasetFolder(root='.', loader=pickle_loader, extensions='.pickle', transform=transform)
-
-
 
 # __Main__
 def main():
     
-    data_transforms = transforms.Compose([transforms.Resize(300),
-            transforms.CenterCrop(299),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-    
-    img_extensions = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.gif', '.octet-stream']
-    
-    data_dir = './debug/'
     batch_size = 32
 
-    image_datasets = datasets.DatasetFolder(data_dir, my_loader, img_extensions,
-                                              data_transforms)
-    dataloaders = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle=True, num_workers=4)
-    
+    # 3 dataloader
+
+    train_data = Dataset_ADNI_Folder(root=root_path + 'train/', loader=pickle_loader, extensions='.pkl', transform=None)
+    valid_data = Dataset_ADNI_Folder(root=root_path + 'valid/', loader=pickle_loader, extensions='.pkl', transform=None)
+    test_data  = Dataset_ADNI_Folder(root=root_path + 'test/' , loader=pickle_loader, extensions='.pkl', transform=None)
+
+    # # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # # print("device:  {}".format(device))
+
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=1)
+    valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=1)
+    test_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=1)
+
+
     index = 0
-    for inputs, labels in dataloaders:
-        print(index)
-        print('inputs')
-        print(inputs.size())
-        print('labels')
-        print(labels.size())
+    for d1, d2, v, labels in valid_loader:
+        # print("key: {} : Left {} : Right {} : Vect {} : label {}".format(index, d1.size(), d2.size(), v, labels.size()))
+        print("key: {} - Left {} : Right {} - Vect {} : label {}".format(index, d1.size(), d2.size(), len(v), labels.size()))
+        index+= 1
     
     
 if __name__ == '__main__':
@@ -152,12 +149,12 @@ if __name__ == '__main__':
 
     
     
-train_dataset = DatasetTransformer(train_dataset, transforms.ToTensor())
-valid_dataset = DatasetTransformer(valid_dataset, transforms.ToTensor())
-test_dataset  = DatasetTransformer(test_dataset , transforms.ToTensor())
+# train_dataset = DatasetTransformer(train_dataset, transforms.ToTensor())
+# valid_dataset = DatasetTransformer(valid_dataset, transforms.ToTensor())
+# test_dataset  = DatasetTransformer(test_dataset , transforms.ToTensor())
 
 
 
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-valid_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-test_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+# train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+# valid_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+# test_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
