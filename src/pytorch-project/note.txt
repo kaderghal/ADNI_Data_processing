@@ -38,19 +38,6 @@ Using multiple workers might hide the loading time, so that your GPU won’t be 
 
 
 
-
-numpy.memmap
-
-
-
-
-
-
-
-
-
-
-
 # Example
 # I am assuming trX is a list of image arrays (1, 224, 224, 3)
 # of length L = 0.8 * len(files)
