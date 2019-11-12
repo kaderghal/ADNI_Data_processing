@@ -77,7 +77,6 @@ def save_lists_to_file(path_file, data_list):
     with open(path_file, 'wb') as f:
         pickle.dump(data_list, f)
 
-
 #------------------------------------------------------------------------------------------
 # read data from file line by line to a List
 #------------------------------------------------------------------------------------------
@@ -87,16 +86,11 @@ def read_data_file(path_file):
         content = f.readlines()
     return [item.strip() for item in content]
 
-
-
-
-
 #------------------------------------------------------------------------------------------
 # Save Model to Local Machine 
 #------------------------------------------------------------------------------------------
 
 def save_model(model, path_file):
-
     try:
         os.makedirs(os.path.dirname(path_file))
     except OSError as e:
@@ -104,8 +98,6 @@ def save_model(model, path_file):
             raise
     with open(path_file, 'wb') as f:
         pickle.dump(model, f)
-
-
 
 #------------------------------------------------------------------------------------------
 # Read Model to Local Machine 
@@ -116,7 +108,6 @@ def read_model(path_file):
     with open(path_file, 'rb') as f:
         model = pickle.load(f)
     return model
-
 
 #------------------------------------------------------------------------------------------
 # Save Desciption Demography outpu data to txt file

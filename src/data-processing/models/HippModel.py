@@ -6,16 +6,15 @@
 
 class HippModel:
     # Attributes members
-    _hippRight = None # 3D data
     _hippLeft = None
+    _hippRight = None # 3D data
     _hippMetaDataVector = None  # [ID, Date, Class, Age, Sex, MMSE] 
     _hippLabel = None # integer
 
-
     # constructor
     def __init__(self, hippLeft, hippRight, hippMetaDataVector, hippLabel):
-        self._hippRight = hippRight
         self._hippLeft = hippLeft
+        self._hippRight = hippRight
         self._hippMetaDataVector = hippMetaDataVector
         self._hippLabel = hippLabel
 
@@ -36,7 +35,6 @@ class HippModel:
     def hippLabel(self):
         return self._hippLabel
 
-
     # Setters
     @hippRight.setter
     def hippRight(self, value):
@@ -50,7 +48,6 @@ class HippModel:
     def hippMetaDataVector(self, value):
         self._hippMetaDataVector = value
         
-
     @hippLabel.setter
     def hippLabel(self, value):
         self._hippLabel = value
@@ -71,7 +68,6 @@ class HippModel:
     @hippLabel.getter
     def hippLabel(self):
         return self._hippLabel
-
 
     # deleter
     @hippRight.deleter
