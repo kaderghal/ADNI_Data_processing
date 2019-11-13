@@ -59,6 +59,7 @@ def get_roi_params_posterior_cc():
 
 def get_augmentation_params():
     tempo_dict = {}
+    tempo_dict['augm_test'] = cfg.AUGMENTATION_PARAMS['augm_test']
     tempo_dict['shift'] = cfg.AUGMENTATION_PARAMS['shift']
     tempo_dict['sigma'] = cfg.AUGMENTATION_PARAMS['sigma']
     tempo_dict['factor'] = cfg.AUGMENTATION_PARAMS['factor']

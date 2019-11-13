@@ -107,10 +107,11 @@ ROI_PARAMS_PPC = {
 # -> (we can use also rotation, flip to augment data)
 #------------------------------------------------------------------------------------------
 AUGMENTATION_PARAMS = {
+    'augm_test': True, # augment Test set
     'shift': 2,  # Max Shift
     'sigma': 1.0,  # Max Sigma for Gaussian Blur
     'factor': 1,  # Augmentation Factor 
-    'flip': False # excute the flip operation for cubes
+    'flip': True # excute the flip operation for cubes
 }
 
 #------------------------------------------------------------------------------------------

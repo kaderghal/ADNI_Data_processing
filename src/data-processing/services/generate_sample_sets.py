@@ -67,7 +67,7 @@ def get_subjects_with_classes(data_params):
 # Function: generates lists from ADNI folder dataset
 #------------------------------------------------------------------------------------------
 
-def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=False, debug=False):  # augm_test bool
+def generate_lists_from_adni_dataset(data_params, shuffle_data=False, debug=False):
     stage_classes = ['AD', 'MCI', 'NC']
     max_blur = float(data_params['sigma'])
     max_shift = int(data_params['shift'])
@@ -85,10 +85,6 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
         test_selected_size = {k: int(data_params['select_test'][k]) for k in stage_classes}
         valid_selected_size = {k: int(math.ceil(int(adni1_size[k]) * 20) / 100.0) for k in stage_classes} 
     
-    print('\n\n')
-    print('--------------------------------------------------------------------------')
-    print('|  source patients ADNI 1', adni1_size)
-    print('--------------------------------------------------------------------------\n')
 
     train_selected_size = {k: adni1_size[k] - valid_selected_size[k] - test_selected_size[k] for k in stage_classes}    
 
@@ -98,23 +94,35 @@ def generate_lists_from_adni_dataset(data_params, augm_test=False, shuffle_data=
 
     adni_1_train_size_balanced = int(max(train_selected_size.values()) * int(data_params['factor']))
     adni_1_valid_size_balanced = int(max(valid_selected_size.values()) * int(data_params['factor']))
-    adni_1_test_size = int(min(test_selected_size.values()))
     
-    print('source patients used for train:', train_selected_size)
-    print('source patients used for validation:', valid_selected_size)
-    print('source patients used for test', test_selected_size)
+    if data_params['augm_test']:
+        adni_1_test_size = int(max(test_selected_size.values()) * int(data_params['factor']))
+    else:
+        adni_1_test_size = int(min(test_selected_size.values()))
+
+        
+    adni_1_train_size_print = adni_1_train_size_balanced
+    adni_1_valid_size_print = adni_1_valid_size_balanced
+    adni_1_test_size_print  = adni_1_test_size
+
+    if data_params['flip']:
+        adni_1_train_size_print = adni_1_train_size_balanced * 2
+        adni_1_valid_size_print = adni_1_valid_size_balanced * 2
+        adni_1_test_size_print  = adni_1_test_size  * 2
+
     print('\n--------------------------------------------------------------------------')
-    print('* [' + CP.fg.YELLOW + 'train'+ CP.fg.WHITE + '] data will be augmented to  {} samples by each class'.format(adni_1_train_size_balanced))
-    print('* [' + CP.fg.YELLOW + 'valid'+ CP.fg.WHITE + '] data will be augmented to  {} samples by each class'.format(adni_1_valid_size_balanced))
-    print('* [' + CP.fg.YELLOW + 'test' + CP.fg.WHITE + ']  data will be not augmented {} samples by each class'.format(adni_1_test_size))
+    print('* [' + CP.fg.YELLOW + 'train'+ CP.fg.WHITE + '] data will be augmented to {} samples by each class'.format(adni_1_train_size_print))
+    print('* [' + CP.fg.YELLOW + 'valid'+ CP.fg.WHITE + '] data will be augmented to {} samples by each class'.format(adni_1_valid_size_print))
+    print('* [' + CP.fg.YELLOW + 'test' + CP.fg.WHITE + '] data will be augmented to {} samples by each class'.format(adni_1_test_size_print))
     print('--------------------------------------------------------------------------\n')
-    
+
     # print table of data augmentation    
     iprint.print_augmentation_table([
-    [int(train_selected_size['AD']), int(train_selected_size['MCI']), int(train_selected_size['NC']),  adni_1_train_size_balanced],
-    [int(valid_selected_size['AD']), int(valid_selected_size['MCI']), int(valid_selected_size['NC']),  adni_1_valid_size_balanced],
-    [int(test_selected_size['AD']), int(test_selected_size['MCI']), int(test_selected_size['NC']),  adni_1_test_size]])
-      
+    [int(train_selected_size['AD']), int(train_selected_size['MCI']), int(train_selected_size['NC']),  adni_1_train_size_print],
+    [int(valid_selected_size['AD']), int(valid_selected_size['MCI']), int(valid_selected_size['NC']),  adni_1_valid_size_print],
+    [int(test_selected_size['AD']), int(test_selected_size['MCI']), int(test_selected_size['NC']),  adni_1_test_size_print]])
+
+
     adni_1_train_lists_out = []
     adni_1_valid_lists_out = []
     adni_1_test_lists_out = []
@@ -208,8 +216,7 @@ def generate_data_from_selected_dataset(data_params, lists_with_names, selected_
                     if n == slt:
                         generate_data(data_params, l, n, c)
     else:
-        print("create 3 way Data") # extensible for futur
-
+        print("create 3 way Data") # extensible for future
 
 #------------------------------------------------------------------------------------------
 # generate Data (2D slices patches or 3D Volumes)
@@ -239,7 +246,6 @@ def generate_3D_data(data_params, lst, data_name, label_code):
     print("--------------------------------------------------------------------------\n" + CP.fg.WHITE + CP.style.RESET_ALL)    
     process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI=data_params['ROI_list'][data_params['ROI_selection']])
 
-
 #------------------------------------------------------------------------------------------
 # 2D extracting 
 #------------------------------------------------------------------------------------------
@@ -250,14 +256,13 @@ def process_extracting_2D_data(data_params, lst, data_name, label_code, indice_R
 #------------------------------------------------------------------------------------------
 # 3D extracting 
 #------------------------------------------------------------------------------------------
-def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI): 
-    
+def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_ROI):     
     if("HIPP" in indice_ROI):
         l, r = tls.get_dimensions_cubes_HIPP(data_params) # exctract only Hippocampus ROI
     elif ("PPC" in indice_ROI):
         l, r = tls.get_dimensions_cubes_PPC(data_params) # exctract only Posterior PC ROI
     else:
-        # compute both ROIs (in futur)
+        # compute both ROIs (in future)
         pass
    
     # get dimensions from the selected ROI (max - min)
@@ -279,49 +284,38 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
     key = 0
     for input_line in lst:        
         # Mean ROI (L & R)
-        # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube       
-        
-        # cross mean between cubes
-        
+        # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube        
+        # cross mean between cubes (in future)       
         # return computed cubes ROIs Left and Right 
         data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
-                        
-        # Fliped Felt & Right ROI       
-        data_roi_left_flip = prc.flip_3d(data_roi_left)
-        data_roi_right_flip = prc.flip_3d(data_roi_right)
-                   
+                                           
         # [ID, Date, Class, Age, Sex, MMSE]
         subject_ID = str(input_line[1]).split('/')[7] 
         meta_data = tls.get_meta_data_xml(data_params, subject_ID)
         # print(meta_data, binary_label, data_set, label_code[input_line[0]])
 
-        # create the model for Dataloader (pytorch)
-        model_object_normal = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))       
+        model_object_normal = HippModel(data_roi_left, data_roi_right, meta_data, int(label_code[input_line[0]]))
         data_size += getsizeof(model_object_normal)
-             
-        #cross fliped model      
-        model_object_fliped = HippModel(data_roi_right_flip, data_roi_left_flip, meta_data, int(label_code[input_line[0]]))       
-        data_size += getsizeof(model_object_fliped)
-       
         model_abs_normal_path = target_path + binary_label + '/' + str(data_set) + '/' + str(input_line[0]) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_normal') + '.pkl'
-        model_abs_fliped_path = target_path + binary_label + '/' + str(data_set) + '/' + str(input_line[0]) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_fliped') + '.pkl'
-
-        
         # store data model
         daf.save_model(model_object_normal, model_abs_normal_path)
-        daf.save_model(model_object_fliped, model_abs_fliped_path)
-        # print("Done: {}".format(model_abs_normal_path))
-        # print("Done: {}".format(model_abs_fliped_path))
 
-        # plot Data
+        if  data_params['flip']:
+            # Fliped Felt & Right ROI       
+            data_roi_left_flip = prc.flip_3d(data_roi_left)
+            data_roi_right_flip = prc.flip_3d(data_roi_right)
+                        
+            #cross fliped model      
+            model_object_fliped = HippModel(data_roi_right_flip, data_roi_left_flip, meta_data, int(label_code[input_line[0]]))       
+            data_size += getsizeof(model_object_fliped)                    
+            model_abs_fliped_path = target_path + binary_label + '/' + str(data_set) + '/' + str(input_line[0]) + '/' + str(key) + str('_' + indice_ROI + '_').upper() + data_name +'_'+ subject_ID + '_['+ str(input_line[0]) + ']' + str('_fliped') + '.pkl'
+            # store data model
+            daf.save_model(model_object_fliped, model_abs_fliped_path)
 
-        key += 1
-        
+        key += 1        
         # Progress of computation       
         print(CP.bg.RED + CP.style.BRIGHT + " {} % percent complete of 100% ".format(round(key/len(lst)*100, 2)) + " " + CP.style.RESET_ALL + CP.bg.RESET, end='\r')
-        
-        
-    # print("\n#================================ End Creating 3D data  ===========================================#\n\n")
-
+                
+    #==========================================================================================================================
     print("\n", end='\r')
     print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb\n".format(data_size/1024) + CP.style.RESET_ALL)  

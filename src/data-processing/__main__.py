@@ -18,15 +18,11 @@ def main():
     print('\n\n' + CP.style.BRIGHT + CP.fg.BLUE +'==========================================================================================================')
     print('------                  $ ADNI Data-set Preproceccing for Alzheimer Diseases. $                     ------ ')
     print('==========================================================================================================\n' +  CP.fg.WHITE + CP.style.BRIGHT)
-   
-   
-   
+     
     print(CP.style.BRIGHT + CP.fg.RED + "\n|------------------------------------------|")
     print('| >>      Configuration details ..   <<    |')
     print("|------------------------------------------|\n" + CP.fg.WHITE + CP.style.RESET_ALL)
-    
-    
-    
+       
     # Display Data Parameters
     iprint.print_author_info()
     iprint.print_global_params()
@@ -37,8 +33,7 @@ def main():
     iprint.print_roi_params_posterior_cc()
     iprint.print_label_binary_codes()
     data_params = rsd.get_all_data_params()
-    
-    
+       
     # original dimensions for nii file (full brain)
     iprint.print_roi_params_global()
     # compute dimensions
@@ -46,9 +41,7 @@ def main():
     PPC_l, PPC_r = tls.get_dimensions_cubes_PPC(data_params)
     iprint.print_dimensions_cubes_HIPP(HIPP_l, HIPP_r )
     iprint.print_dimensions_cubes_PPC(PPC_l, PPC_r)
-                   
-
-        
+                           
     exit_input = input('\n' + CP.fg.YELLOW + 'To change the parameters. exit and update the \"config.py\" file \nto continue press yes (Y/n) ? : ' + CP.fg.RESET)
     exit_bool = False if str(exit_input).lower() == 'y' else True
     if exit_bool:
@@ -65,8 +58,7 @@ def main():
     print('=      The data-set will be splitted into Train & Validation & Test folders.        ')
     print('=      Start Time : {}                                  '.format(time.strftime('%Y-%m-%d %H:%M:%S', localtime)))
     print("==========================================================================================================\n" + CP.fg.WHITE + CP.style.RESET_ALL)
-    
-    
+        
     #--------------------------------------------------------------------
     # [0] : Computes demoghraphie description Table
     #         
@@ -76,8 +68,7 @@ def main():
     data_desc = prc.compute_demography_description(data_params)
     iprint.print_datasetDescription(data_desc)
     daf.save_desc_table(data_params, data_desc)
-    
-    
+        
     #--------------------------------------------------------------------
     # [1] : save parameters from the config file to re-used it
     #         
@@ -104,8 +95,7 @@ def main():
     print('=      Finished Time : {}                               '.format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
     print('=      Execution Time : {}s / [{}min]                                '.format(total_time, round(total_time/60, 2)))
     print("=========================================================================================================="+ CP.fg.WHITE + CP.style.RESET_ALL)
- 
-       
+        
 #------------------------------------------------------------------------------------------
 # Start ->>>->>>  
 #------------------------------------------------------------------------------------------
