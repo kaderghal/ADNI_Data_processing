@@ -98,10 +98,15 @@ This table shows the acronyms used in the project.
 ### Author Information
 
 ADERGHAL KARIM 2019
+
 LaBRI - University of Bordeaux - Bordeaux/France
+
 LabSIV - University Ibn Zohr - Agadir/Morocco
+
 email: {aderghal}.{karim}@gmail.com
+
 email: {karim}.{aderghal}@labri.fr
+
 page: [http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
 
 ## Citation
