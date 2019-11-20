@@ -1,6 +1,8 @@
 
 ## ADNI_Data_processing
+
 The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with study data as they work to define the progression of Alzheimer's disease (AD). This repository includes the preprocessing of the data to extract 2D and 3D data with a specific prepration and pytroch based-projet to work and feed Neural Network for Alzheimer's Disease Classification problem.
+
 ## Repository organization
 
 * dataset: external URl to download the dataset used in the project
@@ -8,17 +10,15 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 > - code source: with python language to prepare the datasets.
 > - pytorch project: for creating architectures and training parameters  
 
-
 ## Requirements
+
 * Linux Operating system (Ubuntu Distribution : 18.04 LTS)
 * Python 2.7 (we will move to 3.6)
 * python libraries:
 
 ## Install python virtual environment (optionnal)
 
-
 ```bash
-
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py
 sudo python3 get-pip.py
@@ -61,25 +61,29 @@ pip3 install pylint pyparsing six
 
 > 4. nibabel (for NIfTI Medical images)
 ```bash
-> pip install nibabel 
+> pip3 install nibabel 
 ```
 
 > 5. for scientific data structure (fast matrix & array ) 
 ```bash
-> pip install numpy
-> pip install scipy 
+> pip3 install numpy
+> pip3 install scipy 
 ```
 
 > 6. work on images
 ```bash
-> pip install pillow
+> pip3 install pillow
 ```
 
 ### Deep learning Framework
 *  [PyTorch](http://pytorch.org/)
 ```bash
-pip install pytorch # for cpu installation (see Official website)
+pip3 install pytorch # for cpu installation (see Official website)
 ```
+
+pytorch website : [https://pytorch.org/](https://pytorch.org/)
+
+
 
 
 ## List of Acronyms:
