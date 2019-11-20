@@ -102,8 +102,7 @@ LaBRI - University of Bordeaux - Bordeaux/France
 LabSIV - University Ibn Zohr - Agadir/Morocco
 email: {aderghal}.{karim}@gmail.com
 email: {karim}.{aderghal}@labri.fr
-[link text itself]:
-[http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
+page: [http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
 
 ## Citation
 
