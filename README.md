@@ -14,7 +14,7 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 * Python 2.7 (we will move to 3.6)
 * python libraries:
 
-## Install python envirenent (optionnal)
+## Install python virtual environment (optionnal)
 
 
 ```bash
@@ -63,11 +63,13 @@ pip3 install pylint pyparsing six
 ```bash
 > pip install nibabel 
 ```
+
 > 5. for scientific data structure (fast matrix & array ) 
 ```bash
 > pip install numpy
 > pip install scipy 
 ```
+
 > 6. work on images
 ```bash
 > pip install pillow
