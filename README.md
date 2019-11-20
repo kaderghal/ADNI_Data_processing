@@ -89,15 +89,15 @@ This table shows the acronyms used in the project.
 | AD | Alzheimer's Disease |
 | MCI | Mild Co,gnitive Impairment |
 | NC | Normal Control |
-| MMSE | ... |
+| MMSE | Mini-Mental State Examination |
 | sMRI | Structural Magnitic Imaging |
 | DTI | Diffusion Tensor Imaging |
 | HIPP | Hippocampus |
-| PPC | .... |
+| PPC | Posterior Parietal Cortex |
 
 ### Author Information
 
-ADERGHAL KARIM 2019
+  > ADERGHAL KARIM 2019
 
 LaBRI - University of Bordeaux - Bordeaux/France
 
