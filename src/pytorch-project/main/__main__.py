@@ -204,15 +204,15 @@ def main():
 
     # parames for data
     params_num_workers = 4
-    batch_size = 32
+    batch_size = 64
     num_classes = 2
     save_frequency = 2
     learning_rate = 0.0001
-    num_epochs = 2
+    num_epochs = 10
     weight_decay = 0.0001
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
-    print("device :", device)
+    print("using device :", device)
     model = HIPP3D().to(device)
 
 
@@ -239,18 +239,6 @@ def main():
     loss_list = []
     acc_list = []
 
-
-
-
-
-    # index = 0
-    # for d1, d2, v, labels in valid_loader:
-    #     # print("key: {} : Left {} : Right {} : Vect {} : label {}".format(index, d1.size(), d2.size(), v, labels.size()))
-    #     print("key: {} - Left {} : Right {} - Vect {} : label {}".format(index, d1.size(), d2.size(), len(v), labels.size()))
-    #     index+= 1
-
-
-
     running_loss = 0.0
     for epoch in range(num_epochs):
         print("epoch:", epoch)   
@@ -260,20 +248,33 @@ def main():
             optimizer.zero_grad()
 
 
-            # forward + backward + optimize
-            d1 = torch.unsqueeze(d1, 0).to(device, dtype=torch.float)
+            # # forward + backward + optimize
+            d1 = torch.unsqueeze(d1, 1).to(device, dtype=torch.float)
+
+
             labels = labels.to(device)
-            # d1 = torch.unsqueeze(d1, 0).to(device, dtype=torch.DoubleTensor)
             outputs = model(d1)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
-            # print statistics
-            running_loss += loss.item()
-            if i % 2000 == 1999:    # print every 2000 mini-batches
-                print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
-                running_loss = 0.0
+            # Track the accuracy
+            total = labels.size(0)
+            _, predicted = torch.max(outputs.data, 1)
+            correct = (predicted == labels).sum().item()
+            acc_list.append(correct / total)
+
+            if (i + 1) % 100 == 0:
+                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
+                    .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(), (correct / total) * 100))
+            
+            
+            
+            # # print statistics
+            # running_loss += loss.item()
+            # if i % 2000 == 1999:    # print every 2000 mini-batches
+            #     print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
+            #     running_loss = 0.0
 
     print('Finished Training')
 
