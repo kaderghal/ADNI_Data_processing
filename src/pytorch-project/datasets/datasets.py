@@ -2,7 +2,6 @@
 import numpy as np
 import pickle
 import os
-import os.path
 import sys
 
 from PIL import Image
@@ -15,11 +14,16 @@ from torch.utils.data.sampler import BatchSampler
 from torchvision.datasets import DatasetFolder
 from torchvision import transforms
 
-# for pickle load
-sys.path.append('/home/karim/workspace/vscode/ADNI_Data_processing/src/data-processing/')
-root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F1_MS2_MB10D/HIPP/3D/AD-NC/'
 
-ADNI_MODEL_EXTENSIONS = ('.pkl')
+
+# import models
+
+# for pickle load
+sys.path.append('/home/karim/workspace/vscode-python/ADNI_codesources/kaderghal/src/data_processing/')
+
+root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
+
+
 
 
 
@@ -117,6 +121,8 @@ class Dataset_ADNI_Folder(DatasetFolder):
 # __Main__
 def main():
     
+    # parames
+    params_num_workers = 4
     batch_size = 32
 
     # 3 dataloader
@@ -128,9 +134,9 @@ def main():
     # # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # # print("device:  {}".format(device))
 
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=1)
-    valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=1)
-    test_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=1)
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
+    valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
+    test_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
 
 
     index = 0
