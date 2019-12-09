@@ -18,15 +18,24 @@ import torch.nn.functional as F
 from torch import nn
 from torch import optim
 
-from torchsummary import summary
+# from torchsummary import summary
 import matplotlib.pyplot as plt
 
 import torch.optim as optim
 
 
 # for pickle load : test exampele
-sys.path.append('/home/karim/workspace/vscode-python/ADNI_codesources/kaderghal/src/data_processing/')
-root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
+# sys.path.append('/home/karim/workspace/vscode-python/ADNI_codesources/kaderghal/src/data_processing/')
+# root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
+
+# server
+sys.path.append('/data/ADERGHAL/code-source/ADNI_Data_processing/src/data_processing/')
+root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
+
+
+
+
+
 
 ADNI_MODEL_EXTENSIONS = ('.pkl')
 
@@ -204,14 +213,14 @@ def main():
 
     # parames for data
     params_num_workers = 4
-    batch_size = 64
+    batch_size = 32
     num_classes = 2
     save_frequency = 2
     learning_rate = 0.0001
-    num_epochs = 10
+    num_epochs = 30
     weight_decay = 0.0001
     
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
     print("using device :", device)
     model = HIPP3D().to(device)
 

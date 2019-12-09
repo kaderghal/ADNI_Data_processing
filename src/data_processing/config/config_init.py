@@ -35,7 +35,8 @@ AUTHOR_INFO = {
 # Root path to local workspace (local Machine)
 #------------------------------------------------------------------------------------------
 ROOT_PATH_LOCAL_MACHINE = {
-    'root_machine': '/home/karim/workspace/ADNI_workspace'
+    # 'root_machine': '/home/karim/workspace/ADNI_workspace'
+    'root_machine':'/home/kadergha/ADERGHAL/ADNI_workspace'
 
 }
 

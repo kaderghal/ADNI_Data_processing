@@ -88,9 +88,10 @@ def generate_lists_from_adni_dataset(data_params, shuffle_data=False, debug=Fals
 
     train_selected_size = {k: adni1_size[k] - valid_selected_size[k] - test_selected_size[k] for k in stage_classes}    
 
+    # split checked
     adni_1_test  = {k: adni_1_dirs_root[k][:int(test_selected_size[k])] for k in stage_classes}
     adni_1_valid = {k: adni_1_dirs_root[k][int(test_selected_size[k]):int(test_selected_size[k]) + int(valid_selected_size[k])] for k in stage_classes}
-    adni_1_train = {k: adni_1_dirs_root[k][int(valid_selected_size[k]): int(valid_selected_size[k]) + int(train_selected_size[k])] for k in stage_classes}
+    adni_1_train = {k: adni_1_dirs_root[k][int(test_selected_size[k]) + int(valid_selected_size[k]): int(test_selected_size[k]) + int(valid_selected_size[k]) + int(train_selected_size[k])] for k in stage_classes}
 
     adni_1_train_size_balanced = int(max(train_selected_size.values()) * int(data_params['factor']))
     adni_1_valid_size_balanced = int(max(valid_selected_size.values()) * int(data_params['factor']))
