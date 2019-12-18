@@ -24,13 +24,15 @@ import matplotlib.pyplot as plt
 import torch.optim as optim
 
 
+
+
 # for pickle load : test exampele
 # sys.path.append('/home/karim/workspace/vscode-python/ADNI_codesources/kaderghal/src/data_processing/')
 # root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
 
 # server
 sys.path.append('/data/ADERGHAL/code-source/ADNI_Data_processing/src/data_processing/')
-root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/MCI-NC/'
+root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
 
 
 
@@ -175,12 +177,15 @@ class HIPP3D(nn.Module):
         self.conv3d1 = nn.Conv3d(1, 32, kernel_size=(4,4,4), stride=1, padding=1)
         self.conv3d2 = nn.Conv3d(32, 64, kernel_size=(2,2,2), stride=1, padding=0)
         self.fc1 = nn.Linear(64*7*7*7, 120)
+        # added by me
+        self.dropout = nn.Dropout(0.5) 
         self.fc2 = nn.Linear(120, 2)
 
     def forward(self, x): 
         x = F.max_pool3d(F.relu(self.conv3d1(x)), kernel_size=(3,3,3), stride=2, padding=0)
         x = F.max_pool3d(F.relu(self.conv3d2(x)), kernel_size=(2,2,2), stride=2, padding=1)
         x = x.view(-1, self.num_flat_features(x))
+        # x = self.dropout(F.relu(self.fc1(x)))
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
@@ -213,12 +218,16 @@ def main():
 
     # parames for data
     params_num_workers = 4
-    batch_size = 32
+    batch_size = 64
     num_classes = 2
     save_frequency = 2
     learning_rate = 0.0001
-    num_epochs = 30
+    num_epochs = 1
     weight_decay = 0.0001
+    steps = 0
+    train_losses, test_losses = [], []
+    running_loss = 0
+    print_every = 10
     
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
     print("using device :", device)
@@ -250,32 +259,80 @@ def main():
 
     running_loss = 0.0
     for epoch in range(num_epochs):
-        print("epoch:", epoch)   
         for i, (d1, d2, v, labels) in enumerate(train_loader):
-            # print(i)          
-            # zero the parameter gradients
-            optimizer.zero_grad()
-
+            
+            #
+            steps += 1
 
             # # forward + backward + optimize
             d1 = torch.unsqueeze(d1, 1).to(device, dtype=torch.float)
-
-
             labels = labels.to(device)
+            # zero the parameter gradients
+            optimizer.zero_grad()   
+
             outputs = model(d1)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
-            # Track the accuracy
-            total = labels.size(0)
-            _, predicted = torch.max(outputs.data, 1)
-            correct = (predicted == labels).sum().item()
-            acc_list.append(correct / total)
+            running_loss += loss.item()
 
-            if (i + 1) % 10 == 0:
-                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
-                    .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(), (correct / total) * 100))
+            if steps % print_every == 0:
+                test_loss = 0
+                accuracy = 0
+                model.eval()
+                with torch.no_grad():
+                    for i, (v_d1, v_d2, v_v, v_labels) in enumerate(valid_loader):
+                        v_d1 = torch.unsqueeze(v_d1, 1).to(device, dtype=torch.float)
+                        v_labels = v_labels.to(device)
+                        v_outputs = model(v_d1)
+                        batch_loss = criterion(v_outputs, v_labels)           
+                        test_loss += batch_loss.item()                    
+                        ps = torch.exp(v_outputs)
+                        top_p, top_class = ps.topk(1, dim=1)
+                        equals = top_class == v_labels.view(*top_class.shape)
+                        accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
+            
+            
+                train_losses.append(running_loss/len(train_loader))
+                test_losses.append(test_loss/len(valid_loader))                    
+                print(f"Epoch {num_epochs+1}/{num_epochs}.. "
+                  f"Train loss: {running_loss/print_every:.3f}.. "
+                  f"Test loss: {test_loss/len(valid_loader):.3f}.. "
+                  f"Test accuracy: {accuracy/len(valid_loader):.3f}")
+                running_loss = 0
+                model.train()
+
+
+    plt.plot(train_losses, label='Training loss')
+    plt.plot(test_losses, label='Validation loss')
+    plt.legend(frameon=False)
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            # # Track the accuracy
+            # total = labels.size(0)
+            # _, predicted = torch.max(outputs.data, 1)
+            # correct = (predicted == labels).sum().item()
+            # acc_list.append(correct / total)
+
+            # if (i + 1) % 10 == 0:
+            #     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
+            #         .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(), (correct / total) * 100))
             
             
             
