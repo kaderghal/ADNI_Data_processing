@@ -34,7 +34,7 @@ import torch.optim as optim
 # HP computer
 ###############################################################################################################
 sys.path.append('/home/karim/workspace/vscode-python/ADNI_Data_processing/src/data_processing')
-root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
+root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-MCI/'
 
 
 ADNI_MODEL_EXTENSIONS = ('.pkl')
@@ -163,7 +163,7 @@ def conv3x3(in_planes, out_planes, kernel_size=1, stride=1, padding=1):
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     
     
- # 3D HIPP
+ # SE_HIPP_3D_Net
 class SE_HIPP_3D_Net(nn.Module):
     def __init__(self):
         super(SE_HIPP_3D_Net, self).__init__()
@@ -174,7 +174,7 @@ class SE_HIPP_3D_Net(nn.Module):
         self.bn2 = nn.BatchNorm2d(64)
         
         self.fc1 = nn.Linear(64*7*7, 120)
-        # self.dropout = nn.Dropout(0.5) 
+        self.dropout = nn.Dropout(0.5) 
         self.fc2 = nn.Linear(120, 2)
 
     def forward(self, x): 
@@ -190,7 +190,7 @@ class SE_HIPP_3D_Net(nn.Module):
         x = self.relu(x)
         # print("size", x.size())
         x = x.view(-1, self.num_flat_features(x))
-        # x = self.dropout(F.relu(self.fc1(x)))
+        x = self.dropout(x)
         # print("size", x.size())
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
@@ -241,14 +241,14 @@ def main():
     batch_size = 64
     num_classes = 2
     save_frequency = 2
-    learning_rate = 0.0001
-    num_epochs = 30
+    learning_rate = 0.001
+    num_epochs = 60
     weight_decay = 0.0001
     
     train_losses, test_losses = [], []
     running_loss = 0
     steps = 0
-    print_every = 10
+    print_every = 35 # 175/5
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
     print("using device :", device)
@@ -277,6 +277,7 @@ def main():
     total_step = len(train_loader)
     loss_list = []
     acc_list = []
+    valid_acc = []
 
     running_loss = 0.0
     for epoch in range(num_epochs):
@@ -298,10 +299,19 @@ def main():
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-
             running_loss += loss.item()
 
+
+            # Track the accuracy
+            total = labels.size(0)
+            _, predicted = torch.max(outputs.data, 1)
+            correct = (predicted == labels).sum().item()
+            
+            # acc_list.append((correct / total) * 100)
+            
+            
             if steps % print_every == 0:
+                acc_list.append((correct / total) * 100)
                 test_loss = 0
                 accuracy = 0
                 model.eval()
@@ -319,14 +329,30 @@ def main():
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
             
             
-                train_losses.append(running_loss/len(train_loader))
-                test_losses.append(test_loss/len(valid_loader))                    
-                print(f"Epoch {num_epochs+1}/{num_epochs}.. "
+                # train_losses.append(running_loss/len(train_loader))
+                train_losses.append(running_loss/print_every)
+                test_losses.append(test_loss/len(valid_loader))    
+                
+                                
+                print(f"Epoch {epoch+1}/{num_epochs}.. "
                   f"Train loss: {running_loss/print_every:.3f}.. "
+                  f"Train accuracy: {(correct / total) * 100:.3f}.. "
                   f"Test loss: {test_loss/len(valid_loader):.3f}.. "
-                  f"Test accuracy: {accuracy/len(valid_loader):.3f}")
+                  f"Test accuracy: {(accuracy/len(valid_loader) * 100):.3f}")
+                
+                valid_acc.append((accuracy/len(valid_loader) * 100))
+                
                 running_loss = 0
                 model.train()
+
+
+
+    
+    plt.plot(acc_list, label='Training accu')
+    plt.plot(valid_acc, label='Validation accu')
+    
+    plt.legend(frameon=False)
+    plt.show()
 
 
     plt.plot(train_losses, label='Training loss')
@@ -336,94 +362,8 @@ def main():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-            # # Track the accuracy
-            # total = labels.size(0)
-            # _, predicted = torch.max(outputs.data, 1)
-            # correct = (predicted == labels).sum().item()
-            # acc_list.append(correct / total)
-
-            # if (i + 1) % 10 == 0:
-            #     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
-            #         .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(), (correct / total) * 100))
-            
-            
-            
-            # # print statistics
-            # running_loss += loss.item()
-            # if i % 2000 == 1999:    # print every 2000 mini-batches
-            #     print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
-            #     running_loss = 0.0
-
     print('Finished Training')
 
-
-
-            
-        # for i, (d1, d2, v, labels) in enumerate(train_loader):
-        #     print(i)
-            
-    #         # Run the forward pass
-    #         d1 = torch.unsqueeze(d1, 0).to(device, dtype=torch.float)
-    #         outputs = model(d1)
-    #         loss = criterion(outputs, labels)
-    #         loss_list.append(loss.item())
-
-            # # Backprop and perform Adam optimisation
-            # optimizer.zero_grad()
-            # loss.backward()
-            # optimizer.step()
-
-            # # Track the accuracy
-            # total = labels.size(0)
-            # _, predicted = torch.max(outputs.data, 1)
-            # correct = (predicted == labels).sum().item()
-            # acc_list.append(correct / total)
-
-            # if (i + 1) % 100 == 0:
-            #     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
-            #         .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(),
-            #             (correct / total) * 100))
-
-    
-
-
-
-
-    # model = OneStreamNet().to(device)
-    # summary(model, (1, 28, 28, 28))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # index = 0
-    # for d1, d2, v, labels in valid_loader:
-    #     # print("key: {} : Left {} : Right {} : Vect {} : label {}".format(index, d1.size(), d2.size(), v, labels.size()))
-    #     print("key: {} - Left {} : Right {} - Vect {} : label {}".format(index, d1.size(), d2.size(), len(v), labels.size()))
-    #     index+= 1
-    
 
 
 #==========================================================================
