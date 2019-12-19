@@ -23,8 +23,6 @@ import matplotlib.pyplot as plt
 
 import torch.optim as optim
 
-
-
 ###############################################################################################################
 # server
 ###############################################################################################################
@@ -32,15 +30,11 @@ import torch.optim as optim
 # root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
 
 
-
-
 ###############################################################################################################
 # HP computer
 ###############################################################################################################
 sys.path.append('/home/karim/workspace/vscode-python/ADNI_Data_processing/src/data_processing')
 root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
-
-
 
 
 ADNI_MODEL_EXTENSIONS = ('.pkl')
@@ -132,44 +126,9 @@ class Dataset_ADNI_Folder(DatasetFolder):
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
+    
  
- 
-    
-    
-# one stream network
-class OneStreamNet(nn.Module):
-    def __init__(self):
-        super(OneStreamNet, self).__init__()
-        
-        self.conv1 = nn.Conv3d(1, 32,  kernel_size=3 ,stride=1, padding=0)
-        self.conv2 = nn.Conv3d(32, 64, kernel_size=3 ,stride=1, padding=0)
 
-        self.pool1 = nn.MaxPool3d(kernel_size=(3,3,3), stride=2, padding=0)
-        self.pool2 = nn.MaxPool3d(kernel_size=(3,3,3), stride=2, padding=0)
-        
-        self.relu1 = nn.ReLU(inplace=True)
-        self.relu2 = nn.ReLU(inplace=True)
-
-        # Defining the fully connected layers
-        self.fc1 = nn.Linear(30000, 1024)
-        self.fc2 = nn.Linear(1024, 2)
-        
-    def forward(self, x):
-        # x = x.view(32,28,28,28)
-        # x = x.view(x.size(0), -1)
-        x = self.conv1(x)
-        x = self.pool1(x)
-        x = self.relu1(x)
-        x = self.conv2(x)
-        x = self.pool2(x)
-        x = self.relu2(x)        
-        x = self.fc1(x)
-        x = self.fc2(x)        
-        return x  
-    
-   
-   
-   
 
 # 3D HIPP
 class HIPP3D(nn.Module):
@@ -198,50 +157,45 @@ class HIPP3D(nn.Module):
             num_features *= s
         return num_features
   
-  
-  
-
-# Siamese 3D HIPP
-class SiameseHipp3D(nn.Module):
+ 
+def conv3x3(in_planes, out_planes, kernel_size=1, stride=1, padding=1):
+    "3x3 convolution with padding"
+    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
     
-    # init
+    
+ # 3D HIPP
+class SE_HIPP_3D_Net(nn.Module):
     def __init__(self):
-        super(SiameseHipp3D, self).__init__()
-        self.conv3d1 = nn.Conv3d(1, 32, kernel_size=(4,4,4), stride=1, padding=1)
-        self.conv3d2 = nn.Conv3d(32, 64, kernel_size=(2,2,2), stride=1, padding=0)
-        self.fc1 = nn.Linear(64*7*7*7, 120)
-        # added by me
-        self.dropout = nn.Dropout(0.5) 
-        self.fc2 = nn.Linear(120, 40)
-        self.fc3 = nn.Linear(40, 12)
-        # concatenate
-        self.fc_conc = nn.Linear(24,2)
+        super(SE_HIPP_3D_Net, self).__init__()
+        self.conv1 = nn.Conv2d(28, 32, kernel_size=4, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(32)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=0)
+        self.bn2 = nn.BatchNorm2d(64)
+        
+        self.fc1 = nn.Linear(64*7*7, 120)
+        # self.dropout = nn.Dropout(0.5) 
+        self.fc2 = nn.Linear(120, 2)
 
-    # forward_once
-    def forward_once(self, x): 
-        x = F.max_pool3d(F.relu(self.conv3d1(x)), kernel_size=(3,3,3), stride=2, padding=0)
-        x = F.max_pool3d(F.relu(self.conv3d2(x)), kernel_size=(2,2,2), stride=2, padding=1)
+    def forward(self, x): 
+        
+        x = self.conv1(x)
+        x = F.max_pool2d(x, kernel_size=3, stride=2, padding=0)
+        x = self.bn1(x)
+        x = self.relu(x)
+        
+        x = self.conv2(x)
+        x = F.max_pool2d(x, kernel_size=2, stride=2, padding=1)
+        x = self.bn2(x)
+        x = self.relu(x)
+        # print("size", x.size())
         x = x.view(-1, self.num_flat_features(x))
         # x = self.dropout(F.relu(self.fc1(x)))
+        # print("size", x.size())
         x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
         return x
 
-
-    # forward siamse
-    def forward(self, x_1, x_2):
-        o_1 = self.forward_once(x_1)
-        o_2 = self.forward_once(x_2)
-        y = torch.cat((o_1, o_2), dim=1) 
-        # print("y (4):", y[1])
-        y = F.relu(self.fc_conc(y))
-        # print("y (2):", y[1])
-        return y
-     
-     
-     
-    
     def num_flat_features(self, x):
         size = x.size()[1:]
         num_features = 1
@@ -249,11 +203,22 @@ class SiameseHipp3D(nn.Module):
             num_features *= s
         return num_features
   
-  
-  
-  
-  
-  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   
 # Train function
 def train(model, device, train_loader, epoch, optimizer):
@@ -277,16 +242,17 @@ def main():
     num_classes = 2
     save_frequency = 2
     learning_rate = 0.0001
-    num_epochs = 1
+    num_epochs = 30
     weight_decay = 0.0001
-    steps = 0
+    
     train_losses, test_losses = [], []
     running_loss = 0
+    steps = 0
     print_every = 10
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
     print("using device :", device)
-    model = SiameseHipp3D().to(device)
+    model = SE_HIPP_3D_Net().to(device)
 
 
 
@@ -300,8 +266,8 @@ def main():
     valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
     test_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
         
-    # net = SiameseHipp3D()
-    # summary(model, (1, 28, 28, 28))
+    # net = LeNet()
+    summary(model, (28, 28, 28))
     
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
@@ -314,43 +280,59 @@ def main():
 
     running_loss = 0.0
     for epoch in range(num_epochs):
-
         for i, (d1, d2, v, labels) in enumerate(train_loader):
-            # print(i)          
-            # zero the parameter gradients
-            optimizer.zero_grad()
-
+            
+            #
+            steps += 1
 
             # # forward + backward + optimize
-            d1 = torch.unsqueeze(d1, 1).to(device, dtype=torch.float)
-            d2 = torch.unsqueeze(d2, 1).to(device, dtype=torch.float)
-
-
+            # print("d1 size:", d1.size())
+            # d1 = torch.unsqueeze(d1, 1).to(device, dtype=torch.float)
+            d1 = d1.to(device, dtype=torch.float)
+            # print("d1 size:", d1.size())
             labels = labels.to(device)
-            outputs = model(d1, d2)
+            # zero the parameter gradients
+            optimizer.zero_grad()   
+
+            outputs = model(d1)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
-            # Track the accuracy
-            total = labels.size(0)
-            _, predicted = torch.max(outputs.data, 1)
-            correct = (predicted == labels).sum().item()
-            acc_list.append(correct / total)
+            running_loss += loss.item()
 
-            if (i + 1) % 10 == 0:
-                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
-                    .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(), (correct / total) * 100))
+            if steps % print_every == 0:
+                test_loss = 0
+                accuracy = 0
+                model.eval()
+                with torch.no_grad():
+                    for i, (v_d1, v_d2, v_v, v_labels) in enumerate(valid_loader):
+                        # v_d1 = torch.unsqueeze(v_d1, 1).to(device, dtype=torch.float)
+                        v_d1 = v_d1.to(device, dtype=torch.float)
+                        v_labels = v_labels.to(device)
+                        v_outputs = model(v_d1)
+                        batch_loss = criterion(v_outputs, v_labels)           
+                        test_loss += batch_loss.item()                    
+                        ps = torch.exp(v_outputs)
+                        top_p, top_class = ps.topk(1, dim=1)
+                        equals = top_class == v_labels.view(*top_class.shape)
+                        accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
             
             
-            
-            # # print statistics
-            # running_loss += loss.item()
-            # if i % 2000 == 1999:    # print every 2000 mini-batches
-            #     print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
-            #     running_loss = 0.0
+                train_losses.append(running_loss/len(train_loader))
+                test_losses.append(test_loss/len(valid_loader))                    
+                print(f"Epoch {num_epochs+1}/{num_epochs}.. "
+                  f"Train loss: {running_loss/print_every:.3f}.. "
+                  f"Test loss: {test_loss/len(valid_loader):.3f}.. "
+                  f"Test accuracy: {accuracy/len(valid_loader):.3f}")
+                running_loss = 0
+                model.train()
 
-    print('Finished Training')
+
+    plt.plot(train_losses, label='Training loss')
+    plt.plot(test_losses, label='Validation loss')
+    plt.legend(frameon=False)
+    plt.show()
 
 
 
