@@ -283,14 +283,16 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
         
     data_size = 0
     key = 0
-    for input_line in lst:        
+    for input_line in lst:  
+        #-----------------------------------------------------------------------------------------------------------------------      
         # Mean ROI (L & R)
         # data_roi_mean = prc.process_mean_hippocampus(input_line, data_params) # mean cube        
         # cross mean between cubes (in future)       
         # return computed cubes ROIs Left and Right 
+        #-----------------------------------------------------------------------------------------------------------------------
         data_roi_left, data_roi_right = prc.process_cube_HIPP(input_line, data_params) # left, right cube
-                                           
-        # [ID, Date, Class, Age, Sex, MMSE]
+                                 
+        # [ID, Date, Class, Age, Sex, MMSE, GDS, CDR] # meta-data
         subject_ID = str(input_line[1]).split('/')[7] 
         meta_data = tls.get_meta_data_xml(data_params, subject_ID)
         # print(meta_data, binary_label, data_set, label_code[input_line[0]])
@@ -313,6 +315,8 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
             # store data model
             daf.save_model(model_object_fliped, model_abs_fliped_path)
 
+
+        
         key += 1        
         # Progress of computation       
         print(CP.bg.RED + CP.style.BRIGHT + " {} % percent complete of 100% ".format(round(key/len(lst)*100, 2)) + " " + CP.style.RESET_ALL + CP.bg.RESET, end='\r')

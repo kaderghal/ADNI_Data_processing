@@ -24,10 +24,13 @@ def get_Subject_info(data_params, subject_ID):
     _Groupe_ = root.findall('.//project/subject/subjectInfo/[@item="DX Group"]')[0].text
     _AGE_ = root.findall('.//project/subject/study/subjectAge')[0].text
     _SEX_ = root.findall('.//project/subject/subjectSex')[0].text
-    _MMSE_ = root.findall('.//project/subject/visit/assessment/[@name="MMSE"]/component/assessmentScore')[0].text
+    _MMSE_ = root.findall('.//project/subject/visit/assessment/[@name="MMSE"]/component/assessmentScore')[0].text    
+    _GDS_ = root.findall('.//project/subject/visit/assessment/[@name="GDSCALE"]/component/assessmentScore')[0].text
+    _CDR_ = root.findall('.//project/subject/visit/assessment/[@name="CDR"]/component/assessmentScore')[0].text
+    
 
     _Groupe_ =  convert_class_name(_Groupe_)
-    return [subject_ID, _Date_Acquisition, _Groupe_, _AGE_, _SEX_, _MMSE_]
+    return [subject_ID, _Date_Acquisition, _Groupe_, _AGE_, _SEX_, _MMSE_, _GDS_, _CDR_]
 
 
 # Convert class name

@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 from random import shuffle
 
 #------------------------------------------------------------------------------------------
-# get Subject Info [Age, Sex, MMSE]
+# get Subject Info [Age, Sex, MMSE, Global GDS,, Global CDR]
 #------------------------------------------------------------------------------------------
 def get_meta_data_xml(data_params, subject_ID):
     return xaf.get_Subject_info(data_params, subject_ID)    

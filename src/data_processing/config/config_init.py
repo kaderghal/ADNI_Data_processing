@@ -92,7 +92,7 @@ ROI_PARAMS_HIPP = {
     'hipp_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
 }
 
-ROI_PARAMS_PPC = {
+ROI_PARAMS_PPC = { # à calculer à partir de l'Atlas AAL 
     'ppc_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
     'ppc_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
 }
@@ -111,7 +111,7 @@ AUGMENTATION_PARAMS = {
     'augm_test': True, #False, #True, # augment Test set
     'shift': 2,  # Max Shift
     'sigma': 1.0,  # Max Sigma for Gaussian Blur
-    'factor': 100,  # Augmentation Factor 
+    'factor': 1,  # Augmentation Factor 
     'flip': True #False, #True # excute the flip operation for cubes
 }
 

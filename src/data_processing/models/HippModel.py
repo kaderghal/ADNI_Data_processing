@@ -8,7 +8,7 @@ class HippModel:
     # Attributes members
     _hippLeft = None
     _hippRight = None # 3D data
-    _hippMetaDataVector = None  # [ID, Date, Class, Age, Sex, MMSE] 
+    _hippMetaDataVector = None  # [ID, Date, Class, Age, Sex, MMSE, GDS, CDR] 
     _hippLabel = None # integer
 
     # constructor

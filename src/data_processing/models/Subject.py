@@ -13,17 +13,21 @@ class Subject:
     _age = 0
     _sex = ""
     _mmse = 0
+    _gds = 0
+    _cdr = 0
 
     #------------------------------------
     # constructor
     #------------------------------------
-    def __init__(self, subjectID, dateAcqui, group, age, sex, mmse):
+    def __init__(self, subjectID, dateAcqui, group, age, sex, mmse, gds, cdr):
         self._subjectID = subjectID
         self._dateAcqui = dateAcqui
         self._group = group
         self._age = age
         self._sex = sex
         self._mmse = mmse
+        self._gds = gds
+        self._cdr = cdr
 
     #------------------------------------
     # Properties
@@ -51,7 +55,15 @@ class Subject:
     @property
     def mmse(self):
         return self._mmse
-       
+    
+    @property
+    def gds(self):
+        return self._gds
+
+    @property
+    def cdr(self):
+        return self._cdr
+          
     #------------------------------------
     # Access
     #------------------------------------  
@@ -80,6 +92,14 @@ class Subject:
     def mmse(self, value):
         self._mmse = value
 
+    @gds.setter
+    def gds(self, value):
+        self._gds = value
+
+    @cdr.setter
+    def cdr(self, value):
+        self._cdr = value
+
     # Getters
     @subjectID.getter
     def subjectID(self):
@@ -104,6 +124,14 @@ class Subject:
     @mmse.getter
     def mmse(self):
         return self._mmse
+    
+    @gds.getter
+    def gds(self):
+        return self._gds
+    
+    @cdr.getter
+    def cdr(self):
+        return self._cdr
         
     # deleter
     @subjectID.deleter
@@ -130,5 +158,12 @@ class Subject:
     def mmse(self):
         del self._mmse
     
+    @gds.deleter
+    def gds(self):
+        del self._gds
+        
+    @cdr.deleter
+    def cdr(self):
+        del self._cdr
 #------------------------------------------------------------------------
 #------------------------------------------------------------------------ 

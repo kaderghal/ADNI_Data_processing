@@ -4,7 +4,9 @@ import services.tools as tls
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 
-
+#------------------------------------------------------------------------------------------
+# compute the mean 3D cube of the Left & Right 3D cubes
+#------------------------------------------------------------------------------------------
 def mean_hipp(mat_a, mat_b):
     x, y, z = mat_a.shape
     for i in range(x):
@@ -13,17 +15,11 @@ def mean_hipp(mat_a, mat_b):
                 mean_hipp[i, j, k] = (mat_a[i, j, k] + mat_b[i, j, k]) / 2
     return mean_hipp
 
-
+#------------------------------------------------------------------------------------------
+# Flip the 3D array data along the x axis
+#------------------------------------------------------------------------------------------
 def flip_3d(data):
-    x, y, z = data.shape
-    hipp_local = np.empty((x, y, z), np.float)
-    for i in range(x):
-        for j in range(y):
-            for k in range(z):
-                i_f = ((x - 1) - i)
-                hipp_local[i_f, j, k] = data[i, j, k]
-    return hipp_local
-
+    return data[::-1, :, :]
 
 def mean_3d_matrix(mat_a, mat_b):
     x, y, z = mat_a.shape
@@ -34,11 +30,18 @@ def mean_3d_matrix(mat_a, mat_b):
                 mean_hipp_local[i, j, k] = (mat_a[i, j, k] + mat_b[i, j, k]) / 2
     return mean_hipp_local
 
+
+#------------------------------------------------------------------------------------------
+# crop the ROI biomarker and return its corrdinates 
+#------------------------------------------------------------------------------------------
 def crop_cubes(data_l, data_r, crp_l, crp_r):
     cube_hipp_l = data_l[crp_l[0]:crp_l[1], crp_l[2]:crp_l[3], crp_l[4]:crp_l[5]]
     cube_hipp_r = data_r[crp_r[0]:crp_r[1], crp_r[2]:crp_r[3], crp_r[4]:crp_r[5]]
     return cube_hipp_l, cube_hipp_r
 
+#------------------------------------------------------------------------------------------
+# apply the augumentation parameters to the cube
+#------------------------------------------------------------------------------------------
 def augmentation_cubes(data, max_shift, augm_params):
     # augm_params should be a tuple of 4 elements: shift_x, shift_y, shift_z, blur_sigma
     if data.ndim != 3 or len(augm_params) != 4:
@@ -118,12 +121,16 @@ def process_cube_PPC(list_item, data_params):
 def computeScores(liste):    
     age = np.asanyarray([float(liste[i].age) for i in range(len(liste))], dtype=np.float32) 
     sex = [str(liste[i].sex) for i in range(len(liste))] 
-    mmse = np.asanyarray([float(liste[i].mmse) for i in range(len(liste))], dtype=np.float32) 
+    mmse = np.asanyarray([float(liste[i].mmse) for i in range(len(liste))], dtype=np.float32)    
+    gds = np.asanyarray([float(liste[i].gds) for i in range(len(liste))], dtype=np.float32)
+    cdr = np.asanyarray([float(liste[i].cdr) for i in range(len(liste))], dtype=np.float32)     
     femaleNumber = ['F' for i in sex if 'F' in str(i)]
     sexRedEX = str(len(femaleNumber)) + '/' + str(len(sex) - len(femaleNumber))
     ageRegEX = '[' + str(round(np.min(age), 2)) + ', ' + str(round(np.max(age) ,2)) + ']/' + str(round(np.mean(age), 2)) + '(' + str(round(np.std(age), 2)) + ')'
     mmseRegEX = '[' + str(round(np.min(mmse), 2)) + ', ' + str(round(np.max(mmse) ,2)) + ']/' + str(round(np.mean(mmse), 2)) + '(' + str(round(np.std(mmse), 2)) + ')'
-    return [len(liste), sexRedEX, ageRegEX, mmseRegEX]
+    gdsRegEX = '[' + str(round(np.min(gds), 2)) + ', ' + str(round(np.max(gds) ,2)) + ']/' + str(round(np.mean(gds), 2)) + '(' + str(round(np.std(gds), 2)) + ')'
+    cdrRegEX = '[' + str(round(np.min(cdr), 2)) + ', ' + str(round(np.max(cdr) ,2)) + ']/' + str(round(np.mean(cdr), 2)) + '(' + str(round(np.std(cdr), 2)) + ')'
+    return [len(liste), sexRedEX, ageRegEX, mmseRegEX, gdsRegEX, cdrRegEX]
     
 def compute_demography_description(data_params):
     import services.generate_sample_sets as gss
