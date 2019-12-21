@@ -35,8 +35,8 @@ AUTHOR_INFO = {
 # Root path to local workspace (local Machine)
 #------------------------------------------------------------------------------------------
 ROOT_PATH_LOCAL_MACHINE = {
-    'root_machine': '/home/karim/workspace/ADNI_workspace'
-    # 'root_machine':'/home/kadergha/ADERGHAL/ADNI_workspace'
+    #'root_machine': '/home/karim/workspace/ADNI_workspace' # HP machine
+    'root_machine':'/home/kadergha/ADERGHAL/ADNI_workspace' # Aivcalc4 server
 
 }
 
@@ -110,8 +110,8 @@ ROI_PARAMS_PPC = { # to calculate from Atlas AAL
 AUGMENTATION_PARAMS = {
     'augm_test': True, #False, #True, # augment Test set
     'shift': 2,  # Max Shift
-    'sigma': 1.0,  # Max Sigma for Gaussian Blur
-    'factor': 100,  # Augmentation Factor 
+    'sigma': 0.5,  # Max Sigma for Gaussian Blur
+    'factor': 10,  # Augmentation Factor 
     'flip': True #False, #True # excute the flip operation for cubes
 }
 

@@ -18,8 +18,6 @@ import torch.nn.functional as F
 from torch import nn
 from torch import optim
 
-
-
 #from torchsummary import summary
 import matplotlib.pyplot as plt
 
@@ -29,7 +27,7 @@ import torch.optim as optim
 # server
 ###############################################################################################################
 sys.path.append('/data/ADERGHAL/code-source/ADNI_Data_processing/src/data_processing/')
-root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB05D/HIPP/3D/AD-NC/'
+root_path = '/data/ADERGHAL/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-NC/'
 
 
 ###############################################################################################################
@@ -217,19 +215,7 @@ def test(model, device, test_loader):
     pass
  
     
-
-###########################################################################
-# Functions
-##########################################################################
     
-def weights_init(m):
-    classname = m.__class__.__name__
-    if classname.find('Conv') != -1:
-        m.weight.data.normal_(0.0, 0.02)
-    elif classname.find('BatchNorm') != -1:
-        m.weight.data.normal_(1.0, 0.02)
-        m.bias.data.fill_(0)
-
 #==========================================================================
 # Function: Main definition 
 #========================================================================== 
@@ -240,8 +226,8 @@ def main():
     batch_size = 64
     num_classes = 2
     save_frequency = 2
-    learning_rate = 0.00001
-    num_epochs = 500
+    learning_rate = 0.0001
+    num_epochs = 100
     weight_decay = 0.0001
     
     train_losses, test_losses = [], []
@@ -253,17 +239,13 @@ def main():
     print("using device :", device)
     model = SE_HIPP_3D_Net().to(device)
 
-    # weights initialization    
-    model.apply(weights_init)
-
 
 
     # DataFolder
     train_data = Dataset_ADNI_Folder(root=root_path + 'train/', loader=pickle_loader, extensions='.pkl', transform=None)
     valid_data = Dataset_ADNI_Folder(root=root_path + 'valid/', loader=pickle_loader, extensions='.pkl', transform=None)
     test_data  = Dataset_ADNI_Folder(root=root_path + 'test/' , loader=pickle_loader, extensions='.pkl', transform=None)
-    valid_data = test_data   
- 
+    
     # Dataloader   
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
     valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
@@ -276,7 +258,6 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9)
       
-    #scheduler = optim.lr_scheduler.StepLR(optimizer,step_size=10, gamma=0.1)
 
     # Train the model
     total_step = len(train_loader)
@@ -349,8 +330,7 @@ def main():
                 
                 running_loss = 0
                 model.train()
-                
-               # scheduler.step()
+
 
 
     
