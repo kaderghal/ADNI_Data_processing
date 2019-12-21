@@ -34,7 +34,7 @@ import torch.optim as optim
 # HP computer
 ###############################################################################################################
 sys.path.append('/home/karim/workspace/vscode-python/ADNI_Data_processing/src/data_processing')
-root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F10_MS2_MB10D/HIPP/3D/AD-MCI/'
+root_path = '/home/karim/workspace/ADNI_workspace/results/ADNI_des/F_28P_F100_MS2_MB10D/HIPP/3D/AD-NC/'
 
 
 ADNI_MODEL_EXTENSIONS = ('.pkl')
@@ -204,26 +204,11 @@ class SE_HIPP_3D_Net(nn.Module):
         return num_features
   
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
   
 # Train function
 def train(model, device, train_loader, epoch, optimizer):
     pass
-    
+  
     
 # Test function
 def test(model, device, test_loader):
@@ -242,7 +227,7 @@ def main():
     num_classes = 2
     save_frequency = 2
     learning_rate = 0.001
-    num_epochs = 60
+    num_epochs = 100
     weight_decay = 0.0001
     
     train_losses, test_losses = [], []
@@ -264,8 +249,9 @@ def main():
     # Dataloader   
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
     valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
-    test_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
-        
+    # valid_loader  = torch.utils.data.DataLoader(test_data,  batch_size=batch_size, shuffle=True, num_workers=params_num_workers)
+    
+   
     # net = LeNet()
     summary(model, (28, 28, 28))
     

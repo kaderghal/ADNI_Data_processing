@@ -323,4 +323,4 @@ def process_extracting_3D_data(data_params, lst, data_name, label_code, indice_R
                 
     #==========================================================================================================================
     print("\n", end='\r')
-    print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb\n".format(data_size/1024) + CP.style.RESET_ALL)  
+    print(CP.style.BRIGHT + "\n>> Data Size is: {} Mb -> {} Gb\n".format(round((data_size/1024) * 6.43, 2), round(((data_size/1024) * 6.43)/1024, 2)) + CP.style.RESET_ALL)  
