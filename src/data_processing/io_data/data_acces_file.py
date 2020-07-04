@@ -14,11 +14,13 @@ def get_nii_from_folder(folder):
     res = []
     for root, dirs, files in os.walk(folder):
         for file in files:
-            if file.endswith('stretched.nii'): # or file.endswith('MD.nii'):
+            if file.endswith('.nii'): # or file.endswith('.nii.gz'):
                 res.append(os.path.join(root, file))
     if len(res) > 1:
         print('WARNING. Folder %s contains more than one files' % folder)
     return res
+
+
 
 def initiate_lmdb(folder_path, lmdb_name, drop_existing=False):  # save data to lmdb Folder
     saving_path = folder_path + '/' + lmdb_name

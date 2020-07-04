@@ -63,13 +63,13 @@ def main():
     # [0] : Computes demoghraphie description Table
     #         
     #--------------------------------------------------------------------
-    print(CP.style.BRIGHT + CP.fg.RED + '>$ Computing of Demography description table. \n' + CP.fg.RESET + CP.style.RESET_ALL)
-    time.sleep(1)
-    data_desc = prc.compute_demography_description(data_params)
-    iprint.print_datasetDescription(data_desc)
-    daf.save_desc_table(data_params, data_desc)
-    time.sleep(1)
-    #--------------------------------------------------------------------
+    # print(CP.style.BRIGHT + CP.fg.RED + '>$ Computing of Demography description table. \n' + CP.fg.RESET + CP.style.RESET_ALL)
+    # time.sleep(1)
+    # data_desc = prc.compute_demography_description(data_params)
+    # iprint.print_datasetDescription(data_desc)
+    # daf.save_desc_table(data_params, data_desc)
+    # time.sleep(1)
+    # #--------------------------------------------------------------------
     # [1] : save parameters from the config file to re-used it
     #         
     #--------------------------------------------------------------------

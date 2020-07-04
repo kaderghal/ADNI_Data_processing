@@ -35,7 +35,7 @@ AUTHOR_INFO = {
 # Root path to local workspace (local Machine)
 #------------------------------------------------------------------------------------------
 ROOT_PATH_LOCAL_MACHINE = {
-    #'root_machine': '/home/karim/workspace/ADNI_workspace' # HP machine
+    # 'root_machine': '/home/karim/workspace/ADNI_workspace' # HP machine
     'root_machine':'/home/kadergha/ADERGHAL/ADNI_workspace' # Aivcalc4 server
 
 }
@@ -47,8 +47,8 @@ ROOT_PATH_LOCAL_MACHINE = {
 #------------------------------------------------------------------------------------------
 GLOBAL_PARAMS = {
     'pytorch_root': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/path/to/pythorch/',
-    'adni_data_src': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI_src/',
-    'adni_data_des': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI_des/'
+    'adni_data_src': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI1_src/',
+    'adni_data_des': ROOT_PATH_LOCAL_MACHINE['root_machine'] + '/results/ADNI1_des/'
 }
 
 #------------------------------------------------------------------------------------------
@@ -90,6 +90,9 @@ ROI_PARAMS_GLOBAL = {
 ROI_PARAMS_HIPP = {
     'hipp_left': (30, 58, 58, 86, 31, 59),  # min_x,max_x ; min_y,max_y ; min_z,max_z
     'hipp_right': (64, 92, 58, 86, 31, 59),  # calculation model : [coordinates - (index + shift, padding)]
+    # 'hipp_left':  (40, 82 , 82, 124, 40, 82),
+    # 'hipp_right': (98, 140, 82, 124, 40, 82),
+
 }
 
 ROI_PARAMS_PPC = { # to calculate from Atlas AAL 
@@ -108,9 +111,9 @@ ROI_PARAMS_PPC = { # to calculate from Atlas AAL
 # -> (we can use also rotation, flip to augment data)
 #------------------------------------------------------------------------------------------
 AUGMENTATION_PARAMS = {
-    'augm_test': True, #False, #True, # augment Test set
+    'augm_test': False, #False, #True, # augment Test set
     'shift': 2,  # Max Shift
-    'sigma': 0.5,  # Max Sigma for Gaussian Blur
+    'sigma': 0.4,  # Max Sigma for Gaussian Blur
     'factor': 10,  # Augmentation Factor 
     'flip': True #False, #True # excute the flip operation for cubes
 }

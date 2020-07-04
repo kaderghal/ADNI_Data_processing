@@ -13,7 +13,7 @@ The Alzheimer's Disease Neuroimaging Initiative (ADNI) unites researchers with s
 ## Requirements
 
 * Linux Operating system (Ubuntu Distribution : 18.04 LTS)
-* Python 2.7 (we will move to 3.6)
+* Python >= (3.6)
 * python libraries:
 
 ## Install python virtual environment (optionnal)
@@ -103,7 +103,7 @@ This table shows the acronyms used in the project.
 
 ### Author Information
 
-  > ADERGHAL KARIM 2019
+  > ADERGHAL KARIM 2020
 
 LaBRI - University of Bordeaux - Bordeaux/France
 
