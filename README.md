@@ -117,12 +117,4 @@ page: [http://www.labri.fr/perso/kadergha](http://www.labri.fr/perso/kadergha)
 
 ## Citation
 
-```bibtex
-@inproceedings{3dEnhancing,
-author={Karim Aderghal and Karim Afdel and Jenny Benois-Pineau and Gwënaelle Catheline},
-title={3D Enhancing Siamese Network for Alzheimer's Disease Classification ....},
-booktitle={Proceedings of XXX},
-pages={1--8},
-year={2020},
-}
-```
+
